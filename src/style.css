@@ -11,6 +11,23 @@
   background: #fff;
 }
 
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+}
+
+header input[type="text"] {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  width: 200px;
+}
+
 .dark {
   background-color: #121212;
   color: #ffffff;
@@ -19,6 +36,13 @@
 .dark header {
   background-color: #1e1e1e;
   color: #ffffff;
+  border-bottom: 1px solid #333;
+}
+
+.dark header input[type="text"] {
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #555;
 }
 
 .dark input, .dark select, .dark button {

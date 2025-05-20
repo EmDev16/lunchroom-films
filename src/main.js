@@ -1,5 +1,6 @@
 import './style.css';
-import { getPopularMovies } from './api.js';
+import { getPopularMovies, searchMovies } from './api.js';
+import { debounce } from './utils.js';
 
 const apiKey = import.meta.env.VITE_TMDB_KEY;
 const baseUrl = 'https://api.themoviedb.org/3';
@@ -65,3 +66,15 @@ themeToggle.addEventListener('change', () => {
 
 // 6. Kick-off
 loadPopularMovies();
+
+// 7. Zoekfunctionaliteit
+const searchInput = document.getElementById('search');
+searchInput.addEventListener(
+  'input',
+  debounce(async (e) => {
+    const query = e.target.value.trim();
+    if (!query) return loadPopularMovies(); // terug naar populairste als leeg
+    const results = await searchMovies(query);
+    renderMovies(results);
+  }, 300)
+);

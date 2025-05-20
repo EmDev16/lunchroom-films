@@ -13,3 +13,16 @@ export async function getPopularMovies(page = 1) {
     return [];
   }
 }
+
+export async function searchMovies(query) {
+  const url = `${BASE_URL}/search/movie?api_key=${apiKey}&language=nl-BE&query=${encodeURIComponent(query)}`;
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    return json.results;
+  } catch (err) {
+    console.error('Fout bij zoeken naar films:', err);
+    return [];
+  }
+}
