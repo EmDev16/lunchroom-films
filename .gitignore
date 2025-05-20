@@ -155,3 +155,6 @@ dist
 .yarn/install-state.gz
 .pnp.*
 7f0b
+VITE_TMDB_KEY=6671f55f078a9782a57acf368371a49e
+VITE_TMDB_URL=https://api.themoviedb.org/3
+VITE_TMDB_IMAGE_URL=https://image.tmdb.org/t/p/original
