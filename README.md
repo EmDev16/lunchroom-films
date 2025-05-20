@@ -1,11 +1,6 @@
 # lunchroom-films
 Lunchroom Films is een interactieve single-page applicatie (SPA) waarmee gebruikers:
-Populaire en gezochte films uit The Movie Database (TMDb) kunnen verkennen
-Films kunnen filteren op genre en jaar
-Films kunnen doorzoeken met een live zoek­functie (debounce)
-Favoriete films kunnen opslaan en beheren (LocalStorage)
-Te­recht­kunnen in een licht- of donker­theme, met voorkeuren bewaard
-Responsief en visueel aantrekkelijk kunnen navigeren
+Populaire en gezochte films uit The Movie Database (TMDb) kunnen verkennen, Films kunnen filteren op genre en jaar, Films kunnen doorzoeken met een live zoek­functie (debounce), Favoriete films kunnen opslaan en beheren (LocalStorage), Te­recht­kunnen in een licht- of donker­theme, met voorkeuren bewaard, Responsief en visueel aantrekkelijk kunnen navigeren
 
 
 ## Troubleshooting
