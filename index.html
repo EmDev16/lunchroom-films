@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lunchroom Films</title>
+  <link rel="stylesheet" href="src/style.css">
+</head>
+
+<body>
+  <div id="app">
+  <header>
+    <label>
+      <input type="checkbox" id="theme-toggle">
+      Donker thema
+    </label>
+    <input type="text" id="search" placeholder="Zoek een film…">
+  </header>
+  <main>
+    <section id="filters">
+      <h2>Filter Films</h2>
+      <label>
+        Genre:
+        <select id="genre-filter">
+          <option value="">Alle genres</option>
+          <!-- Dynamically populated options -->
+        </select>
+      </label>
+      <label>
+        Jaar:
+        <input type="number" id="year-filter" placeholder="Bijv. 2023">
+      </label>
+      <button id="apply-filters">Toepassen</button>
+    </section>
+
+
+    <section id="favorites">
+      <h2>Favorieten</h2>
+      <div id="favorites-container">
+      </div>
+    </section>
+  </main>
+  <footer>
+    Gegevens & afbeeldingen via
+    <a href="https://www.themoviedb.org" target="_blank" rel="noopener noreferrer">
+      The Movie Database (TMDb)
+    </a>
+  </footer>
+  <script src="/src/main.js"></script>
+</div>
+</body>
+
+</html>
