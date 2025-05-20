@@ -12,10 +12,8 @@
 <body>
   <div id="app">
   <header>
-    <label>
-      <input type="checkbox" id="theme-toggle">
-      Donker thema
-    </label>
+    <h1 id="site-title">Lunchroom Films</h1>
+    <button id="theme-toggle-label">Donker thema</button>
     <input type="text" id="search" placeholder="Zoek een film…">
   </header>
   <main>
@@ -42,6 +40,7 @@
     </section>
 
     <section id="movie-list"></section>
+    <button id="load-more" class="hidden">Meer laden</button>
   </main>
   <footer>
     Gegevens & afbeeldingen via
@@ -51,6 +50,14 @@
   </footer>
   <script type="module" src="/src/main.js"></script>
 </div>
+
+<div id="overlay" class="hidden">
+  <div id="overlay-content">
+    <button id="close-overlay">✖</button>
+    <div id="overlay-details"></div>
+  </div>
+</div>
+
 </body>
 
 </html>
