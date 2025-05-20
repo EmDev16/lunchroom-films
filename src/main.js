@@ -46,7 +46,7 @@ function renderMovies(movies) {
     const isFavorite = favorites.some(fav => fav.id === movie.id);
     card.innerHTML = `
       <img
-        src="${movie.poster_path ? imageBase + movie.poster_path : ''}"
+        src="${movie.poster_path ? imageBase + movie.poster_path : '/fallback.jpg'}"
         alt="${movie.title} poster"
         loading="lazy"
       />
@@ -87,15 +87,19 @@ loadPopularMovies();
 
 // 7. Zoekfunctionaliteit
 const searchInput = document.getElementById('search');
-searchInput.addEventListener(
-  'input',
-  debounce(async (e) => {
-    const query = e.target.value.trim();
-    if (!query) return loadPopularMovies(); // terug naar populairste als leeg
+const debouncedSearch = debounce(async (e) => {
+  const query = e.target.value.trim();
+  if (!query) return loadPopularMovies(); // terug naar populairste als leeg
+  try {
     const results = await searchMovies(query);
     renderMovies(results);
-  }, 300)
-);
+  } catch (err) {
+    console.error('Error during search:', err);
+    movieContainer.innerHTML = '<p>Sorry, something went wrong while searching for movies.</p>';
+  }
+}, 300);
+
+searchInput.addEventListener('input', debouncedSearch);
 
 // 8. Genres laden
 async function loadGenres() {
@@ -136,27 +140,41 @@ function toggleFavorite(movie) {
   } else {
     favorites.splice(index, 1);
   }
-  localStorage.setItem('favorites', JSON.stringify(favorites));
+  localStorage.setItem('favorites', JSON.stringify(favorites)); // Sla favorieten op
   renderFavorites();
 }
 
 function renderFavorites() {
   const favoritesContainer = document.getElementById('favorites-container');
-  favoritesContainer.innerHTML = '';
+  if (favorites.length === 0) {
+    favoritesContainer.innerHTML = '<p>No favorites yet. Add some movies!</p>';
+    return;
+  }
+  favoritesContainer.innerHTML = ''; // Clear existing content
   favorites.forEach(movie => {
     const card = document.createElement('div');
-    card.className = 'movie-card';
+    card.className = 'favorite-card';
     card.innerHTML = `
       <img
-        src="${movie.poster_path ? imageBase + movie.poster_path : ''}"
+        src="${movie.poster_path ? imageBase + movie.poster_path : '/fallback.jpg'}"
         alt="${movie.title} poster"
         loading="lazy"
+        class="favorite-poster"
       />
       <h3>${movie.title}</h3>
+      <button class="remove-favorite-btn">Remove</button>
     `;
+    card.querySelector('.remove-favorite-btn').addEventListener('click', () => {
+      toggleFavorite(movie); // Remove from favorites
+    });
     favoritesContainer.appendChild(card);
   });
 }
+
+// Laad favorieten bij het opstarten
+document.addEventListener('DOMContentLoaded', () => {
+  renderFavorites();
+});
 
 // 11. Kick-off
 loadGenres();
