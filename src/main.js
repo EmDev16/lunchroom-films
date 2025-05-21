@@ -227,14 +227,36 @@ async function loadGenres() {
 document.getElementById('apply-filters').addEventListener('click', async () => {
   const genreId = document.getElementById('genre-filter').value;
   const year = document.getElementById('year-filter').value;
-  try {
-    const filteredMovies = await getFilteredMovies(genreId, year, currentSort);
-    currentMovies = filteredMovies;
-    originalMovies = [...filteredMovies];
-    renderMovies(filteredMovies);
-  } catch (err) {
-    console.error('Fout bij toepassen van filters:', err);
-    movieContainer.innerHTML = '<p>Sorry, er ging iets mis bij het toepassen van de filters.</p>';
+  if (isFav()) {
+    // Filter favorieten lokaal
+    let filtered = [...favorites];
+    if (genreId) {
+      filtered = filtered.filter(movie =>
+        movie.genre_ids && movie.genre_ids.includes(Number(genreId))
+      );
+    }
+    if (year) {
+      filtered = filtered.filter(movie =>
+        movie.release_date && movie.release_date.startsWith(year)
+      );
+    }
+    // Sorteer indien nodig
+    const value = sortDropdown.value;
+    const sorted = value ? sortMovies(filtered, value) : filtered;
+    currentMovies = sorted;
+    originalMovies = [...filtered];
+    renderMovies(sorted);
+  } else {
+    // Filter via API
+    try {
+      const filteredMovies = await getFilteredMovies(genreId, year, currentSort);
+      currentMovies = filteredMovies;
+      originalMovies = [...filteredMovies];
+      renderMovies(filteredMovies);
+    } catch (err) {
+      console.error('Fout bij toepassen van filters:', err);
+      movieContainer.innerHTML = '<p>Sorry, er ging iets mis bij het toepassen van de filters.</p>';
+    }
   }
 });
 
@@ -286,5 +308,19 @@ document.getElementById('favorites-toggle').addEventListener('change', () => {
     loadPopularMovies(1, currentSort);
     document.getElementById('load-more').classList.remove('hidden');
     favoritesToggleLabel.textContent = 'Favorieten';
+  }
+});
+
+// Reset filters knop functionaliteit
+document.getElementById('reset-filters').addEventListener('click', () => {
+  document.getElementById('genre-filter').value = '';
+  document.getElementById('year-filter').value = '';
+  // Reset naar originele lijst (populair of favorieten)
+  if (isFav()) {
+    currentMovies = [...favorites];
+    originalMovies = [...favorites];
+    renderMovies(favorites);
+  } else {
+    loadPopularMovies(1, currentSort);
   }
 });
