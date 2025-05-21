@@ -20,17 +20,15 @@ export async function fetchMovies() {
   }
 }
 
-export async function getPopularMovies(page = 1) {
-  const url = `${BASE_URL}/movie/popular?api_key=${API_KEY}&language=nl-BE&page=${page}`;
-  try {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const json = await res.json();
-    return json.results;
-  } catch (err) {
-    console.error('Fout bij ophalen populaire films:', err);
-    return [];
-  }
+export async function getPopularMovies(page = 1, sort = '') {
+  const params = new URLSearchParams({
+    api_key: import.meta.env.VITE_TMDB_KEY,
+    page,
+    sort_by: sort || 'popularity.desc'
+  });
+  const res = await fetch(`https://api.themoviedb.org/3/discover/movie?${params}`);
+  const data = await res.json();
+  return data.results || [];
 }
 
 export async function searchMovies(query) {
@@ -59,15 +57,14 @@ export async function getGenres() {
   }
 }
 
-export async function getFilteredMovies(genreId = '', year = '', page = 1) {
-  const url = `${BASE_URL}/discover/movie?api_key=${API_KEY}&language=nl-BE&page=${page}&with_genres=${genreId}&primary_release_year=${year}`;
-  try {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const json = await res.json();
-    return json.results;
-  } catch (err) {
-    console.error('Fout bij ophalen gefilterde films:', err);
-    return [];
-  }
+export async function getFilteredMovies(genreId, year, sort = '') {
+  const params = new URLSearchParams({
+    api_key: import.meta.env.VITE_TMDB_KEY,
+    with_genres: genreId || '',
+    primary_release_year: year || '',
+    sort_by: sort || 'popularity.desc'
+  });
+  const res = await fetch(`https://api.themoviedb.org/3/discover/movie?${params}`);
+  const data = await res.json();
+  return data.results || [];
 }

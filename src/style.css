@@ -47,7 +47,7 @@ header input[type="text"] {
   white-space: nowrap; /* Voorkomt afbreken */
   overflow: hidden;
   text-overflow: ellipsis;
-  width: 300px;
+  width: 250px;
 }
 
 .header-actions {

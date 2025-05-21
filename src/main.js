@@ -18,16 +18,22 @@ const movieContainer = document.getElementById('movie-list');
 
 // 3. Fetch populaire films
 let currentPage = 1; // Houd bij welke pagina momenteel wordt weergegeven
+let currentMovies = []; // Houd de laatst opgehaalde films bij (populair, gefilterd of favorieten)
+let originalMovies = []; // Houd de originele volgorde bij voor reset
+let currentSort = ''; // Houd de huidige sorteeroptie bij
 
-async function loadPopularMovies() {
+async function loadPopularMovies(page = 1, sort = '') {
   try {
-    const movies = await getPopularMovies();
-    if (!movies.length) {
-      console.warn('No movies returned from the API.');
-      movieContainer.innerHTML = '<p>No movies available at the moment.</p>';
-      return;
+    const movies = await getPopularMovies(page, sort);
+    if (page === 1) {
+      currentMovies = movies;
+      originalMovies = [...movies];
+      renderMovies(movies);
+    } else {
+      currentMovies = [...currentMovies, ...movies];
+      originalMovies = [...currentMovies];
+      renderMovies(currentMovies);
     }
-    renderMovies(movies);
     document.getElementById('load-more').classList.remove('hidden'); // Maak de knop zichtbaar
   } catch (err) {
     console.error('Error fetching popular movies:', err);
@@ -36,18 +42,8 @@ async function loadPopularMovies() {
 }
 
 async function loadMoreMovies() {
-  try {
-    currentPage++; // Verhoog de pagina
-    const movies = await getPopularMovies(currentPage);
-    if (!movies.length) {
-      console.warn('No more movies to load.');
-      document.getElementById('load-more').classList.add('hidden'); // Verberg de knop als er geen films meer zijn
-      return;
-    }
-    renderMovies(movies, true); // Voeg films toe aan de bestaande lijst
-  } catch (err) {
-    console.error('Error loading more movies:', err);
-  }
+  currentPage++; // Verhoog de pagina
+  await loadPopularMovies(currentPage, currentSort);
 }
 
 // Test getPopularMovies()
@@ -87,6 +83,56 @@ function renderMovies(movies, append = false) {
     movieContainer.appendChild(card);
   });
 }
+
+// Sorteerfunctie
+function sortMovies(movies, sortValue) {
+  let sorted = [...movies];
+  switch (sortValue) {
+    case 'popularity.desc':
+      sorted.sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
+      break;
+    case 'release_date.desc':
+      sorted.sort((a, b) => new Date(b.release_date) - new Date(a.release_date));
+      break;
+    case 'release_date.asc':
+      sorted.sort((a, b) => new Date(a.release_date) - new Date(b.release_date));
+      break;
+    case 'vote_average.desc':
+      sorted.sort((a, b) => (b.vote_average || 0) - (a.vote_average || 0));
+      break;
+    case 'vote_average.asc':
+      sorted.sort((a, b) => (a.vote_average || 0) - (b.vote_average || 0));
+      break;
+    case 'title.asc':
+      sorted.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
+      break;
+    case 'title.desc':
+      sorted.sort((a, b) => (b.title || '').localeCompare(a.title || ''));
+      break;
+    default:
+      // Geen sortering, originele volgorde
+      sorted = [...originalMovies];
+  }
+  return sorted;
+}
+
+// Sorteer event listener
+const sortDropdown = document.getElementById('sort-dropdown');
+sortDropdown.addEventListener('change', async () => {
+  const value = sortDropdown.value;
+  currentSort = value;
+  currentPage = 1;
+  if (isFav()) {
+    // Sorteer favorieten lokaal
+    const sorted = value ? sortMovies(favorites, value) : [...favorites];
+    currentMovies = sorted;
+    originalMovies = [...favorites];
+    renderMovies(sorted);
+  } else {
+    // Haal gesorteerde films van de API
+    await loadPopularMovies(1, value);
+  }
+});
 
 function openOverlay(movie) {
   const overlay = document.getElementById('overlay');
@@ -147,9 +193,11 @@ loadPopularMovies();
 const searchInput = document.getElementById('search');
 const debouncedSearch = debounce(async (e) => {
   const query = e.target.value.trim();
-  if (!query) return loadPopularMovies(); // terug naar populairste als leeg
+  if (!query) return loadPopularMovies(1, currentSort); // terug naar populairste als leeg
   try {
     const results = await searchMovies(query);
+    currentMovies = results;
+    originalMovies = [...results];
     renderMovies(results);
   } catch (err) {
     console.error('Error during search:', err);
@@ -180,7 +228,9 @@ document.getElementById('apply-filters').addEventListener('click', async () => {
   const genreId = document.getElementById('genre-filter').value;
   const year = document.getElementById('year-filter').value;
   try {
-    const filteredMovies = await getFilteredMovies(genreId, year);
+    const filteredMovies = await getFilteredMovies(genreId, year, currentSort);
+    currentMovies = filteredMovies;
+    originalMovies = [...filteredMovies];
     renderMovies(filteredMovies);
   } catch (err) {
     console.error('Fout bij toepassen van filters:', err);
@@ -200,7 +250,11 @@ function toggleFavorite(movie) {
   }
   localStorage.setItem('favorites', JSON.stringify(favorites));
   if (isFav()) {
-    renderMovies(favorites);
+    const value = sortDropdown.value;
+    const sorted = value ? sortMovies(favorites, value) : [...favorites];
+    currentMovies = sorted;
+    originalMovies = [...favorites];
+    renderMovies(sorted);
   }
 }
 
@@ -218,14 +272,18 @@ function isFav() {
 // Event listener voor de favorieten-toggle
 const favoritesToggleLabel = document.getElementById('favorites-toggle-label');
 document.getElementById('favorites-toggle').addEventListener('change', () => {
+  sortDropdown.value = ''; // Reset sorteeroptie
+  currentSort = '';
   if (isFav()) {
     document.body.classList.add('favorites-only');
+    currentMovies = [...favorites];
+    originalMovies = [...favorites];
     renderMovies(favorites);
     document.getElementById('load-more').classList.add('hidden');
     favoritesToggleLabel.textContent = 'Alle films';
   } else {
     document.body.classList.remove('favorites-only');
-    loadPopularMovies();
+    loadPopularMovies(1, currentSort);
     document.getElementById('load-more').classList.remove('hidden');
     favoritesToggleLabel.textContent = 'Favorieten';
   }
