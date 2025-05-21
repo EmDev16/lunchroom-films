@@ -23,7 +23,6 @@
   </header>
   <main>
     <section id="filters">
-      <h2>Filter Films</h2>
       <label>
         Genre:
         <select id="genre-filter">
@@ -35,6 +34,18 @@
         <input type="number" id="year-filter" placeholder="Bijv. 2023">
       </label>
       <button id="apply-filters">Toepassen</button>
+      <span id="sort-container">
+        <span id="sort-icon">⇅</span>
+        <select id="sort-dropdown" aria-label="Sorteer">
+          <option value="popularity.desc">Populairst</option>
+          <option value="release_date.desc">Nieuwste</option>
+          <option value="release_date.asc">Oudste</option>
+          <option value="vote_average.desc">Hoogste rating</option>
+          <option value="vote_average.asc">Laagste rating</option>
+          <option value="title.asc">A-Z</option>
+          <option value="title.desc">Z-A</option>
+        </select>
+      </span>
     </section>
 
     <section id="movie-list"></section>

@@ -44,10 +44,14 @@ body.dark .movie-card p {
 
 /* Stijlen voor de header */
 header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem;
+  padding: 16px 16px 16px 16px; /* Alleen onderaan padding */
   background-color: #bbdefb; /* Iets donkerdere blauwe achtergrond */
   border-bottom: 1px solid #ddd;
   flex-wrap: wrap;
@@ -128,6 +132,8 @@ header input[type="text"] {
 /* Stijlen voor de body in lichtmodus */
 body {
   transition: background-color 0.3s ease, color 0.3s ease;
+  margin: 0;
+  padding: 0;
 }
 
 /* Stijlen voor de body in donker modus */
@@ -338,4 +344,164 @@ body.dark #favorites-toggle-label {
 
 body.dark #favorites-toggle-label:hover {
   background-color: #64b5f6;
+}
+
+main {
+  padding: 0 1rem;
+}
+
+#section {
+  padding: 10px;
+}
+
+#filters {
+  margin-top: 1.5rem;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  background: #e3f2fd;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #bbdefb;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.04);
+  justify-content: flex-start;
+  position: relative;
+}
+
+body.dark #filters {
+  background: #1e1e1e;
+  border: 1px solid #333;
+  box-shadow: 0 2px 8px rgba(144, 202, 249, 0.06);
+}
+
+#filters label {
+  display: flex;
+  flex-direction: column;
+  font-size: 1rem;
+  color: #1976d2;
+  gap: 0.3rem;
+}
+
+body.dark #filters label {
+  color: #90caf9;
+}
+
+#genre-filter,
+#year-filter,
+#sort-dropdown {
+  padding: 0.5rem;
+  border: 1px solid #1976d2;
+  border-radius: 4px;
+  font-size: 1rem;
+  background: #fff;
+  color: #1976d2;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#genre-filter:focus,
+#year-filter:focus,
+#sort-dropdown:focus {
+  border-color: #1565c0;
+  outline: none;
+  box-shadow: 0 0 0 2px #90caf9;
+}
+
+body.dark #genre-filter,
+body.dark #year-filter,
+body.dark #sort-dropdown {
+  background: #222;
+  color: #90caf9;
+  border: 1px solid #90caf9;
+}
+
+body.dark #genre-filter:focus,
+body.dark #year-filter:focus,
+body.dark #sort-dropdown:focus {
+  border-color: #1976d2;
+  box-shadow: 0 0 0 2px #1976d2;
+}
+
+#apply-filters {
+  background-color: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1.2rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+  font-weight: 500;
+  margin-top: 1.2rem;
+}
+
+#apply-filters:hover,
+#apply-filters:focus {
+  background-color: #1565c0;
+  color: #fff;
+  outline: none;
+}
+
+body.dark #apply-filters {
+  background-color: #90caf9;
+  color: #121212;
+}
+
+body.dark #apply-filters:hover,
+body.dark #apply-filters:focus {
+  background-color: #1976d2;
+  color: #fff;
+}
+
+/* Sorteer dropdown rechts */
+#sort-container {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+#sort-icon {
+  font-size: 1.3rem;
+  color: #1976d2;
+  vertical-align: middle;
+  pointer-events: none;
+}
+
+body.dark #sort-icon {
+  color: #90caf9;
+}
+
+footer {
+  background: #bbdefb;
+  color: #1976d2;
+  text-align: center;
+  padding: 0.8rem 0 0.8rem 0;
+  font-size: 1rem;
+  border-top: 1px solid #ddd;
+  margin-top: 2rem;
+}
+
+footer a {
+  color: #1976d2;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+footer a:hover {
+  color: #1565c0;
+}
+
+body.dark footer {
+  background: #1e1e1e;
+  color: #90caf9;
+  border-top: 1px solid #333;
+}
+
+body.dark footer a {
+  color: #90caf9;
+}
+
+body.dark footer a:hover {
+  color: #64b5f6;
 }
