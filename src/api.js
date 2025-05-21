@@ -57,13 +57,23 @@ export async function getGenres() {
   }
 }
 
-export async function getFilteredMovies(genreId, year, sort = '') {
+export async function getFilteredMovies(genreId, year, sort = '', extra = {}, page = 1) {
   const params = new URLSearchParams({
     api_key: import.meta.env.VITE_TMDB_KEY,
     with_genres: genreId || '',
     primary_release_year: year || '',
-    sort_by: sort || 'popularity.desc'
+    sort_by: sort || 'popularity.desc',
+    page
   });
+
+  // Voeg extra filters toe voor unreleased/released
+  if (extra.release_date_gte) {
+    params.set('release_date.gte', extra.release_date_gte);
+  }
+  if (extra.release_date_lte) {
+    params.set('release_date.lte', extra.release_date_lte);
+  }
+
   const res = await fetch(`https://api.themoviedb.org/3/discover/movie?${params}`);
   const data = await res.json();
   return data.results || [];

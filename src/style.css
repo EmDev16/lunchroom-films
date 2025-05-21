@@ -223,6 +223,40 @@ body.dark #favorites-toggle-label:hover {
   outline: none;
 }
 
+#released-toggle {
+  background-color: #fff;
+  color: #1976d2;
+  border: 1.5px solid #1976d2;
+  border-radius: 4px;
+  padding: 0.5rem 1.1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-left: 0.2rem;
+  margin-top: 1.2rem;
+  font-weight: 500;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+#released-toggle.active {
+  background-color: #1976d2;
+  color: #fff;
+  border-color: #1976d2;
+}
+
+#released-toggle:not(.active) {
+  background-color: #fff;
+  color: #1976d2;
+  border-color: #1976d2;
+}
+
+#released-toggle:hover,
+#released-toggle:focus {
+  background-color: #1565c0;
+  color: #fff;
+  border-color: #1565c0;
+  outline: none;
+}
+
 /* Sorteer dropdown rechts */
 #sort-container {
   margin-left: auto;
@@ -285,6 +319,31 @@ body.dark #reset-filters:hover,
 body.dark #reset-filters:focus {
   background-color: #90caf9;
   color: #121212;
+  border-color: #1976d2;
+}
+
+body.dark #released-toggle {
+  background-color: #222;
+  color: #90caf9;
+  border: 1.5px solid #90caf9;
+}
+
+body.dark #released-toggle.active {
+  background-color: #90caf9;
+  color: #121212;
+  border-color: #90caf9;
+}
+
+body.dark #released-toggle:not(.active) {
+  background-color: #222;
+  color: #90caf9;
+  border-color: #90caf9;
+}
+
+body.dark #released-toggle:hover,
+body.dark #released-toggle:focus {
+  background-color: #1976d2;
+  color: #fff;
   border-color: #1976d2;
 }
 
