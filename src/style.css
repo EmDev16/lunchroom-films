@@ -1,48 +1,4 @@
-/* Layout voor de lijst met films */
-#movie-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* Altijd vaste kaartbreedte */
-  gap: 1rem;
-}
-
-/* Stijlen voor filmkaarten */
-.movie-card {
-  padding: 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background: #fff;
-  transition: transform 0.2s, box-shadow 0.2s;
-  min-height: 370px; /* Vaste hoogte voor consistente layout */
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  position: relative; /* Voor absolute positionering van de ster */
-}
-
-.movie-card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.movie-card img {
-  width: 100%;
-  border-radius: 4px;
-  object-fit: cover;
-  display: block;
-}
-
-/* Stijlen voor filmkaartdetails */
-.movie-card p {
-  margin: 0.5rem 0;
-  font-size: 0.9rem;
-  color: #555;
-}
-
-body.dark .movie-card p {
-  color: #ccc; /* Betere leesbaarheid in donker modus */
-}
-
-/* Stijlen voor de header */
+/* ---------------- HEADER ---------------- */
 header {
   position: sticky;
   top: 0;
@@ -51,11 +7,11 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 16px 16px 16px; /* Alleen onderaan padding */
-  background-color: #bbdefb; /* Iets donkerdere blauwe achtergrond */
+  padding: 16px 16px 16px 16px;
+  background-color: #bbdefb;
   border-bottom: 1px solid #ddd;
   flex-wrap: wrap;
-  gap: 0.5rem; /* Minder ruimte tussen elementen */
+  gap: 0.5rem;
 }
 
 header input[type="text"] {
@@ -66,17 +22,32 @@ header input[type="text"] {
   width: 200px;
 }
 
-/* Stijlen voor de site-titel */
+.header-logo-title {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.site-logo {
+  height: 2.2rem;
+  width: auto;
+  display: block;
+}
+
 #site-title {
   font-size: 2rem;
-  color: #1976d2; 
+  color: #1976d2;
   margin: 0;
-  flex-grow: 1; /* Zorgt dat de titel ruimte inneemt */
-  background-color: #e3f2fd; /* Lichtere blauwe achtergrond */
-  padding: 0.05rem 0.2rem; /* Nog kleinere padding */
-  text-align: left; /* Titel links */
+  flex-grow: 1;
+  background-color: #e3f2fd;
+  padding: 0.05rem 0.2rem;
+  text-align: left;
   border-radius: 4px;
-  max-width: 40%;
+  max-width: 100%; /* Was 40%, nu 70% */
+  white-space: nowrap; /* Voorkomt afbreken */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 300px;
 }
 
 .header-actions {
@@ -86,7 +57,6 @@ header input[type="text"] {
   flex-shrink: 0;
 }
 
-/* Stijlen voor de donkere thema-knop */
 #theme-toggle-label {
   background-color: #1976d2;
   color: #fff;
@@ -120,7 +90,6 @@ header input[type="text"] {
   background-color: #1565c0;
 }
 
-/* Verberg de standaard checkbox */
 #theme-toggle {
   display: none;
 }
@@ -129,19 +98,7 @@ header input[type="text"] {
   display: none;
 }
 
-/* Stijlen voor de body in lichtmodus */
-body {
-  transition: background-color 0.3s ease, color 0.3s ease;
-  margin: 0;
-  padding: 0;
-}
-
-/* Stijlen voor de body in donker modus */
-body.dark {
-  background-color: #121212;
-  color: #e0e0e0; /* Lichtgrijs voor betere contrast */
-}
-
+/* Donker modus header */
 body.dark header {
   background-color: #1e1e1e;
   color: #e0e0e0;
@@ -155,20 +112,190 @@ body.dark header input[type="text"] {
 }
 
 body.dark #site-title {
-  color: #90caf9; /* Lichtere blauwe kleur in donker modus */
-  background-color: #2a2a2a; /* Donkere achtergrond voor de titel */
+  color: #90caf9;
+  background-color: #2a2a2a;
 }
 
-body.dark input, body.dark select, body.dark button {
-  background-color: #333333;
-  color: #e0e0e0;
+body.dark #theme-toggle-label {
+  background-color: #90caf9;
+  color: #121212;
 }
 
-body.dark a {
+body.dark #theme-toggle-label:hover {
+  background-color: #64b5f6;
+}
+
+body.dark #favorites-toggle-label {
+  background-color: #90caf9;
+  color: #121212;
+}
+
+body.dark #favorites-toggle-label:hover {
+  background-color: #64b5f6;
+}
+
+/* ---------------- FILTERS ---------------- */
+#filters {
+  margin-top: 1.5rem;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  background: #e3f2fd;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #bbdefb;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.04);
+  justify-content: flex-start;
+  position: relative;
+}
+
+#filters label {
+  display: flex;
+  flex-direction: column;
+  font-size: 1rem;
+  color: #1976d2;
+  gap: 0.3rem;
+}
+
+#genre-filter,
+#year-filter,
+#sort-dropdown {
+  padding: 0.5rem;
+  border: 1px solid #1976d2;
+  border-radius: 4px;
+  font-size: 1rem;
+  background: #fff;
+  color: #1976d2;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#genre-filter:focus,
+#year-filter:focus,
+#sort-dropdown:focus {
+  border-color: #1565c0;
+  outline: none;
+  box-shadow: 0 0 0 2px #90caf9;
+}
+
+#apply-filters {
+  background-color: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1.2rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+  font-weight: 500;
+  margin-top: 1.2rem;
+}
+
+#apply-filters:hover,
+#apply-filters:focus {
+  background-color: #1565c0;
+  color: #fff;
+  outline: none;
+}
+
+/* Sorteer dropdown rechts */
+#sort-container {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+#sort-icon {
+  font-size: 1.3rem;
+  color: #1976d2;
+  vertical-align: middle;
+  pointer-events: none;
+}
+
+/* Donker modus filters */
+body.dark #filters {
+  background: #1e1e1e;
+  border: 1px solid #333;
+  box-shadow: 0 2px 8px rgba(144, 202, 249, 0.06);
+}
+
+body.dark #filters label {
   color: #90caf9;
 }
 
-/* Stijlen voor filmkaarten in donker modus */
+body.dark #genre-filter,
+body.dark #year-filter,
+body.dark #sort-dropdown {
+  background: #222;
+  color: #90caf9;
+  border: 1px solid #90caf9;
+}
+
+body.dark #genre-filter:focus,
+body.dark #year-filter:focus,
+body.dark #sort-dropdown:focus {
+  border-color: #1976d2;
+  box-shadow: 0 0 0 2px #1976d2;
+}
+
+body.dark #apply-filters {
+  background-color: #90caf9;
+  color: #121212;
+}
+
+body.dark #apply-filters:hover,
+body.dark #apply-filters:focus {
+  background-color: #1976d2;
+  color: #fff;
+}
+
+body.dark #sort-icon {
+  color: #90caf9;
+}
+
+/* ---------------- MOVIE LIST & CARDS ---------------- */
+#movie-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.movie-card {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  transition: transform 0.2s, box-shadow 0.2s;
+  min-height: 370px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  position: relative;
+}
+
+.movie-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.movie-card img {
+  width: 100%;
+  border-radius: 4px;
+  object-fit: cover;
+  display: block;
+}
+
+.movie-card p {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+body.dark .movie-card p {
+  color: #ccc;
+}
+
 body.dark .movie-card {
   background: #1e1e1e;
   border: 1px solid #333;
@@ -178,7 +305,67 @@ body.dark .movie-card:hover {
   box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
 }
 
-/* Overlay container */
+/* Favorietknop */
+.favorite-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 2;
+  background: none !important;
+  border: none;
+  border-radius: 0;
+  width: 1.7rem;
+  height: 1.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: filter 0.2s, transform 0.15s;
+  outline: none;
+  box-shadow: none !important;
+}
+
+.favorite-btn svg {
+  width: 1.3rem;
+  height: 1.3rem;
+  display: block;
+  pointer-events: none;
+}
+
+.favorite-btn:not(.active) svg {
+  fill: none;
+  stroke: #1976d2;
+  stroke-width: 2.5;
+}
+
+.favorite-btn.active svg {
+  fill: #FFD600;
+  stroke: #FFD600;
+  stroke-width: 2.5;
+}
+
+.favorite-btn:focus-visible,
+.favorite-btn:hover {
+  filter: drop-shadow(0 0 4px #FFD60088);
+  transform: scale(1.15);
+}
+
+body.dark .favorite-btn:not(.active) svg {
+  stroke: #90caf9;
+}
+
+body.dark .favorite-btn.active svg {
+  fill: #FFD600;
+  stroke: #FFD600;
+}
+
+body.dark .favorite-btn:focus-visible,
+body.dark .favorite-btn:hover {
+  filter: drop-shadow(0 0 6px #FFD600cc);
+}
+
+/* ---------------- OVERLAY ---------------- */
 #overlay {
   position: fixed;
   top: 0;
@@ -193,7 +380,7 @@ body.dark .movie-card:hover {
 }
 
 #overlay.hidden {
-  display: none; /* Verberg overlay standaard */
+  display: none;
 }
 
 #overlay-content {
@@ -240,238 +427,7 @@ body.dark #close-overlay {
   color: #e0e0e0;
 }
 
-/* Standaardstijl voor de favorietknop */
-.favorite-btn {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  z-index: 2;
-  background: none !important;
-  border: none;
-  border-radius: 0;
-  width: 1.7rem;
-  height: 1.7rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  padding: 0;
-  transition: filter 0.2s, transform 0.15s;
-  outline: none;
-  box-shadow: none !important;
-}
-
-.favorite-btn svg {
-  width: 1.3rem;
-  height: 1.3rem;
-  display: block;
-  pointer-events: none;
-}
-
-.favorite-btn:not(.active) svg {
-  fill: none;
-  stroke: #1976d2; /* Altijd blauw, ook in licht thema */
-  stroke-width: 2.5;
-  /* Geen rand/vierkant */
-}
-
-.favorite-btn.active svg {
-  fill: #FFD600;
-  stroke: #FFD600;
-  stroke-width: 2.5;
-}
-
-.favorite-btn:focus-visible,
-.favorite-btn:hover {
-  filter: drop-shadow(0 0 4px #FFD60088);
-  transform: scale(1.15);
-}
-
-body.dark .favorite-btn:not(.active) svg {
-  stroke: #90caf9; /* Blauwe rand in donker thema */
-}
-
-body.dark .favorite-btn.active svg {
-  fill: #FFD600;
-  stroke: #FFD600;
-}
-
-body.dark .favorite-btn:focus-visible,
-body.dark .favorite-btn:hover {
-  filter: drop-shadow(0 0 6px #FFD600cc);
-}
-
-/* Stijlen voor de "Load More"-knop */
-#load-more {
-  display: block;
-  margin: 2rem auto;
-  padding: 0.75rem 1.5rem;
-  background-color: #1976d2;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-#load-more:hover {
-  background-color: #1565c0;
-}
-
-#load-more.hidden {
-  display: none; /* Verberg de knop standaard */
-}
-
-/* Donker modus aanpassingen */
-body.dark #theme-toggle-label {
-  background-color: #90caf9;
-  color: #121212;
-}
-
-body.dark #theme-toggle-label:hover {
-  background-color: #64b5f6;
-}
-
-body.favorites-only #movie-list {
-  display: grid;
-}
-
-body.dark #favorites-toggle-label {
-  background-color: #90caf9;
-  color: #121212;
-}
-
-body.dark #favorites-toggle-label:hover {
-  background-color: #64b5f6;
-}
-
-main {
-  padding: 0 1rem;
-}
-
-#section {
-  padding: 10px;
-}
-
-#filters {
-  margin-top: 1.5rem;
-  margin-bottom: 2rem;
-  display: flex;
-  align-items: flex-end;
-  gap: 1rem;
-  background: #e3f2fd;
-  padding: 1rem 1.5rem;
-  border-radius: 8px;
-  border: 1px solid #bbdefb;
-  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.04);
-  justify-content: flex-start;
-  position: relative;
-}
-
-body.dark #filters {
-  background: #1e1e1e;
-  border: 1px solid #333;
-  box-shadow: 0 2px 8px rgba(144, 202, 249, 0.06);
-}
-
-#filters label {
-  display: flex;
-  flex-direction: column;
-  font-size: 1rem;
-  color: #1976d2;
-  gap: 0.3rem;
-}
-
-body.dark #filters label {
-  color: #90caf9;
-}
-
-#genre-filter,
-#year-filter,
-#sort-dropdown {
-  padding: 0.5rem;
-  border: 1px solid #1976d2;
-  border-radius: 4px;
-  font-size: 1rem;
-  background: #fff;
-  color: #1976d2;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-#genre-filter:focus,
-#year-filter:focus,
-#sort-dropdown:focus {
-  border-color: #1565c0;
-  outline: none;
-  box-shadow: 0 0 0 2px #90caf9;
-}
-
-body.dark #genre-filter,
-body.dark #year-filter,
-body.dark #sort-dropdown {
-  background: #222;
-  color: #90caf9;
-  border: 1px solid #90caf9;
-}
-
-body.dark #genre-filter:focus,
-body.dark #year-filter:focus,
-body.dark #sort-dropdown:focus {
-  border-color: #1976d2;
-  box-shadow: 0 0 0 2px #1976d2;
-}
-
-#apply-filters {
-  background-color: #1976d2;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  padding: 0.5rem 1.2rem;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
-  font-weight: 500;
-  margin-top: 1.2rem;
-}
-
-#apply-filters:hover,
-#apply-filters:focus {
-  background-color: #1565c0;
-  color: #fff;
-  outline: none;
-}
-
-body.dark #apply-filters {
-  background-color: #90caf9;
-  color: #121212;
-}
-
-body.dark #apply-filters:hover,
-body.dark #apply-filters:focus {
-  background-color: #1976d2;
-  color: #fff;
-}
-
-/* Sorteer dropdown rechts */
-#sort-container {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-}
-
-#sort-icon {
-  font-size: 1.3rem;
-  color: #1976d2;
-  vertical-align: middle;
-  pointer-events: none;
-}
-
-body.dark #sort-icon {
-  color: #90caf9;
-}
-
+/* ---------------- FOOTER ---------------- */
 footer {
   background: #bbdefb;
   color: #1976d2;
@@ -504,4 +460,68 @@ body.dark footer a {
 
 body.dark footer a:hover {
   color: #64b5f6;
+}
+
+/* ---------------- OVERIGE ---------------- */
+main {
+  padding: 0 1rem;
+}
+
+#section {
+  padding: 10px;
+}
+
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+  margin: 0;
+  padding: 0;
+}
+
+body.dark {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+body.favorites-only #movie-list {
+  display: grid;
+}
+
+/* Stijlen voor de "Load More"-knop */
+#load-more {
+  display: block;
+  margin: 2rem auto;
+  padding: 0.75rem 1.5rem;
+  background-color: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#load-more:hover {
+  background-color: #1565c0;
+}
+
+#load-more.hidden {
+  display: none;
+}
+
+body.dark #load-more {
+  background-color: #90caf9;
+  color: #121212;
+}
+
+body.dark #load-more:hover {
+  background-color: #64b5f6;
+}
+
+body.dark input, body.dark select, body.dark button {
+  background-color: #333333;
+  color: #e0e0e0;
+}
+
+body.dark a {
+  color: #90caf9;
 }
