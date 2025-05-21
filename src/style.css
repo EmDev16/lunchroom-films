@@ -626,3 +626,45 @@ body.dark button {
 body.dark a {
   color: #90caf9;
 }
+
+#bottom-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+#scroll-top-btn {
+  background-color: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
+  transition: background 0.2s, color 0.2s;
+}
+
+#scroll-top-btn:hover,
+#scroll-top-btn:focus {
+  background-color: #1565c0;
+  color: #fff;
+  outline: none;
+}
+
+body.dark #scroll-top-btn {
+  background-color: #90caf9;
+  color: #121212;
+}
+
+body.dark #scroll-top-btn:hover,
+body.dark #scroll-top-btn:focus {
+  background-color: #1976d2;
+  color: #fff;
+}

@@ -424,3 +424,9 @@ document.getElementById('reset-filters').addEventListener('click', () => {
     loadPopularMovies(1, currentSort, {});
   }
 });
+
+// Scroll naar boven knop functionaliteit
+const scrollTopBtn = document.getElementById('scroll-top-btn');
+scrollTopBtn.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
