@@ -11,68 +11,67 @@
 
 <body>
   <div id="app">
-  <header>
-    <div class="header-logo-title">
-      <img src="/src/assets/logo.png" alt="Logo" class="site-logo" />
-      <h1 id="site-title">Lunchroom Films</h1>
-    </div>
-    <div class="header-actions">
-      <label id="favorites-toggle-label" for="favorites-toggle">Favorieten</label>
-      <input type="checkbox" id="favorites-toggle" />
-      <label id="theme-toggle-label" for="theme-toggle">🌙</label>
-      <input type="checkbox" id="theme-toggle" />
-      <input type="text" id="search" placeholder="Zoek een film…">
-    </div>
-  </header>
-  <main>
-    <section id="filters">
-      <label>
-        Genre:
-        <select id="genre-filter">
-          <option value="">Alle genres</option>
-        </select>
-      </label>
-      <label>
-        Jaar:
-        <input type="number" id="year-filter" placeholder="Bijv. 2023">
-      </label>
-      <button id="released-toggle" type="button" title="Toon alleen unreleased films">Unreleased</button>
-      <button id="apply-filters">Toepassen</button>
-      <button id="reset-filters" title="Reset filters" aria-label="Reset filters">⟲</button>
-      <span id="sort-container">
-        <span id="sort-icon">⇅</span>
-        <select id="sort-dropdown" aria-label="Sorteer">
-          <option value="" selected>Sorteer</option>
-          <option value="popularity.desc">Populairst</option>
-          <option value="release_date.desc">Nieuwste</option>
-          <option value="release_date.asc">Oudste</option>
-          <option value="vote_average.desc">Hoogste rating</option>
-          <option value="vote_average.asc">Laagste rating</option>
-          <option value="title.asc">A-Z</option>
-          <option value="title.desc">Z-A</option>
-        </select>
-      </span>
-    </section>
+    <header>
+      <div class="header-logo-title">
+        <img src="/src/assets/logo.png" alt="Logo" class="site-logo" />
+        <h1 id="site-title">Lunchroom Films</h1>
+      </div>
+      <div class="header-actions">
+        <label id="favorites-toggle-label" for="favorites-toggle">Favorieten</label>
+        <input type="checkbox" id="favorites-toggle" />
+        <label id="theme-toggle-label" for="theme-toggle">🌙</label>
+        <input type="checkbox" id="theme-toggle" />
+        <input type="text" id="search" placeholder="Zoek een film…">
+      </div>
+    </header>
+    <main>
+      <section id="filters">
+        <label>
+          Genre:
+          <select id="genre-filter">
+            <option value="">Alle genres</option>
+          </select>
+        </label>
+        <label>
+          Jaar:
+          <input type="number" id="year-filter" placeholder="Bijv. 2023">
+        </label>
+        <button id="released-toggle" type="button" title="Toon alleen unreleased films">Unreleased</button>
+        <button id="apply-filters">Toepassen</button>
+        <button id="reset-filters" title="Reset filters" aria-label="Reset filters">⟲</button>
+        <span id="sort-container">
+          <span id="sort-icon">⇅</span>
+          <select id="sort-dropdown" aria-label="Sorteer">
+            <option value="" selected>Sorteer</option>
+            <option value="popularity.desc">Populairst</option>
+            <option value="release_date.desc">Nieuwste</option>
+            <option value="release_date.asc">Oudste</option>
+            <option value="vote_average.desc">Hoogste rating</option>
+            <option value="vote_average.asc">Laagste rating</option>
+            <option value="title.asc">A-Z</option>
+            <option value="title.desc">Z-A</option>
+          </select>
+        </span>
+      </section>
 
-    <section id="movie-list"></section>
-    <button id="load-more" class="hidden">Meer laden</button>
-  </main>
-  <footer>
-    Gegevens & afbeeldingen via
-    <a href="https://www.themoviedb.org" target="_blank" rel="noopener noreferrer">
-      The Movie Database (TMDb)
-    </a>
-  </footer>
-  <script type="module" src="/src/main.js"></script>
-</div>
-
-<div id="overlay" class="hidden">
-  <div id="overlay-content">
-    <button id="close-overlay">✖</button>
-    <div id="overlay-details"></div>
+      <section id="movie-list"></section>
+      <button id="load-more" class="hidden">Meer laden</button>
+    </main>
+    <footer>
+      Gegevens & afbeeldingen via
+      <a href="https://www.themoviedb.org" target="_blank" rel="noopener noreferrer">
+        The Movie Database (TMDb)
+      </a>
+    </footer>
+    <script type="module" src="/src/main.js"></script>
   </div>
-</div>
 
+  <div id="overlay" class="hidden">
+    <div id="overlay-content">
+      <button id="close-overlay">✖</button>
+      <div id="overlay-details"></div>
+    </div>
+  </div>
 </body>
 
 </html>

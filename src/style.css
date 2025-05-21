@@ -3,7 +3,7 @@ header {
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -43,8 +43,10 @@ header input[type="text"] {
   padding: 0.05rem 0.2rem;
   text-align: left;
   border-radius: 4px;
-  max-width: 100%; /* Was 40%, nu 70% */
-  white-space: nowrap; /* Voorkomt afbreken */
+  max-width: 100%;
+  /* Was 40%, nu 70% */
+  white-space: nowrap;
+  /* Voorkomt afbreken */
   overflow: hidden;
   text-overflow: ellipsis;
   width: 250px;
@@ -614,7 +616,9 @@ body.dark #load-more:hover {
   background-color: #64b5f6;
 }
 
-body.dark input, body.dark select, body.dark button {
+body.dark input,
+body.dark select,
+body.dark button {
   background-color: #333333;
   color: #e0e0e0;
 }

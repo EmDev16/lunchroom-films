@@ -122,7 +122,7 @@ function renderMovies(movies, append = false) {
       />
       <h3>${movie.title}</h3>
       <p><strong>Release Date:</strong> ${movie.release_date || 'Unknown'}</p>
-      <p><strong>Rating:</strong> ${movie.vote_average || 'N/A'}</p>
+      <p><strong>Rating:</strong> ${typeof movie.vote_average === 'number' ? movie.vote_average.toFixed(1) : 'N/A'}</p>
     `;
     const favoriteBtn = card.querySelector('.favorite-btn');
     favoriteBtn.addEventListener('click', (e) => {
@@ -197,7 +197,7 @@ function openOverlay(movie) {
     />
     <h2>${movie.title}</h2>
     <p><strong>Release Date:</strong> ${movie.release_date || 'Unknown'}</p>
-    <p><strong>Rating:</strong> ${movie.vote_average || 'N/A'}</p>
+    <p><strong>Rating:</strong> ${typeof movie.vote_average === 'number' ? movie.vote_average.toFixed(1) : 'N/A'}</p>
     <p>${overview}</p>
   `;
   overlay.classList.remove('hidden'); // Maak overlay zichtbaar
