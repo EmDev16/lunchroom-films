@@ -62,20 +62,20 @@ function renderMovies(movies, append = false) {
     const card = document.createElement('div');
     card.className = 'movie-card';
     const isFavorite = favorites.some(fav => fav.id === movie.id);
-    const overview = movie.overview.length > 100 
-      ? `${movie.overview.slice(0, 100)}…` 
-      : movie.overview; // Toon volledige tekst als deze kort genoeg is
     card.innerHTML = `
+      <button class="favorite-btn${isFavorite ? ' active' : ''}" aria-label="Voeg toe aan favorieten">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <polygon points="12,2 15,9 22,9.5 17,14.5 18.5,22 12,18 5.5,22 7,14.5 2,9.5 9,9"/>
+        </svg>
+      </button>
       <img
         src="${movie.poster_path ? imageBase + movie.poster_path : '/fallback.jpg'}"
         alt="${movie.title} poster"
         loading="lazy"
       />
       <h3>${movie.title}</h3>
-      <p>${overview}</p>
       <p><strong>Release Date:</strong> ${movie.release_date || 'Unknown'}</p>
       <p><strong>Rating:</strong> ${movie.vote_average || 'N/A'}</p>
-      <button class="favorite-btn ${isFavorite ? 'active' : ''}">${isFavorite ? '★' : '☆'}</button>
     `;
     const favoriteBtn = card.querySelector('.favorite-btn');
     favoriteBtn.addEventListener('click', (e) => {
@@ -198,63 +198,35 @@ function toggleFavorite(movie) {
   } else {
     favorites.splice(index, 1);
   }
-  localStorage.setItem('favorites', JSON.stringify(favorites)); // Sla favorieten op
-  renderFavorites();
-}
-
-function renderFavorites() {
-  const favoritesContainer = document.getElementById('favorites-container');
-  if (favorites.length === 0) {
-    favoritesContainer.innerHTML = '<p>No favorites yet. Add some movies!</p>';
-    return;
+  localStorage.setItem('favorites', JSON.stringify(favorites));
+  if (isFav()) {
+    renderMovies(favorites);
   }
-  favoritesContainer.innerHTML = ''; // Clear existing content
-  favorites.forEach(movie => {
-    const card = document.createElement('div');
-    card.className = 'favorite-card';
-    card.innerHTML = `
-      <img
-        src="${movie.poster_path ? imageBase + movie.poster_path : '/fallback.jpg'}"
-        alt="${movie.title} poster"
-        loading="lazy"
-        class="favorite-poster"
-      />
-      <h3>${movie.title}</h3>
-      <button class="remove-favorite-btn">Remove</button>
-    `;
-    card.querySelector('.remove-favorite-btn').addEventListener('click', () => {
-      toggleFavorite(movie); // Remove from favorites
-    });
-    favoritesContainer.appendChild(card);
-  });
 }
-
-// Laad favorieten bij het opstarten
-document.addEventListener('DOMContentLoaded', () => {
-  renderFavorites();
-});
 
 // 11. Kick-off
 loadGenres();
-renderFavorites();
-
-async function displayMovies() {
-  const movies = await fetchMovies();
-  const movieList = document.getElementById('movie-list');
-  movieList.innerHTML = ''; // Clear existing content
-  movies.forEach(movie => {
-    const movieCard = document.createElement('div');
-    movieCard.className = 'movie-card';
-    movieCard.innerHTML = `
-      <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
-      <h3>${movie.title}</h3>
-      <p>Rating: ${movie.vote_average}</p>
-    `;
-    movieList.appendChild(movieCard);
-  });
-}
-
-displayMovies();
 
 // Voeg een klikgebeurtenis toe aan de "Load More"-knop
 document.getElementById('load-more').addEventListener('click', loadMoreMovies);
+
+// Functie om te bepalen of alleen favorieten getoond moeten worden
+function isFav() {
+  return document.getElementById('favorites-toggle').checked;
+}
+
+// Event listener voor de favorieten-toggle
+const favoritesToggleLabel = document.getElementById('favorites-toggle-label');
+document.getElementById('favorites-toggle').addEventListener('change', () => {
+  if (isFav()) {
+    document.body.classList.add('favorites-only');
+    renderMovies(favorites);
+    document.getElementById('load-more').classList.add('hidden');
+    favoritesToggleLabel.textContent = 'Alle films';
+  } else {
+    document.body.classList.remove('favorites-only');
+    loadPopularMovies();
+    document.getElementById('load-more').classList.remove('hidden');
+    favoritesToggleLabel.textContent = 'Favorieten';
+  }
+});

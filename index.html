@@ -13,8 +13,13 @@
   <div id="app">
   <header>
     <h1 id="site-title">Lunchroom Films</h1>
-    <button id="theme-toggle-label">Donker thema</button>
-    <input type="text" id="search" placeholder="Zoek een film…">
+    <div class="header-actions">
+      <label id="favorites-toggle-label" for="favorites-toggle">Favorieten</label>
+      <input type="checkbox" id="favorites-toggle" />
+      <label id="theme-toggle-label" for="theme-toggle">🌙</label>
+      <input type="checkbox" id="theme-toggle" />
+      <input type="text" id="search" placeholder="Zoek een film…">
+    </div>
   </header>
   <main>
     <section id="filters">
@@ -23,7 +28,6 @@
         Genre:
         <select id="genre-filter">
           <option value="">Alle genres</option>
-          <!-- Dynamically populated options -->
         </select>
       </label>
       <label>
@@ -31,12 +35,6 @@
         <input type="number" id="year-filter" placeholder="Bijv. 2023">
       </label>
       <button id="apply-filters">Toepassen</button>
-    </section>
-
-    <section id="favorites">
-      <h2>Favorieten</h2>
-      <div id="favorites-container">
-      </div>
     </section>
 
     <section id="movie-list"></section>

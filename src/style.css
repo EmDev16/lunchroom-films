@@ -1,7 +1,7 @@
 /* Layout voor de lijst met films */
 #movie-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsieve grid */
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* Altijd vaste kaartbreedte */
   gap: 1rem;
 }
 
@@ -12,6 +12,11 @@
   border-radius: 8px;
   background: #fff;
   transition: transform 0.2s, box-shadow 0.2s;
+  min-height: 370px; /* Vaste hoogte voor consistente layout */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  position: relative; /* Voor absolute positionering van de ster */
 }
 
 .movie-card:hover {
@@ -23,6 +28,7 @@
   width: 100%;
   border-radius: 4px;
   object-fit: cover;
+  display: block;
 }
 
 /* Stijlen voor filmkaartdetails */
@@ -45,7 +51,7 @@ header {
   background-color: #bbdefb; /* Iets donkerdere blauwe achtergrond */
   border-bottom: 1px solid #ddd;
   flex-wrap: wrap;
-  gap: 1rem; /* Voeg ruimte toe tussen elementen */
+  gap: 0.5rem; /* Minder ruimte tussen elementen */
 }
 
 header input[type="text"] {
@@ -63,8 +69,17 @@ header input[type="text"] {
   margin: 0;
   flex-grow: 1; /* Zorgt dat de titel ruimte inneemt */
   background-color: #e3f2fd; /* Lichtere blauwe achtergrond */
-  padding: 0.1rem 0.5rem;
-  border-radius: 8px;
+  padding: 0.05rem 0.2rem; /* Nog kleinere padding */
+  text-align: left; /* Titel links */
+  border-radius: 4px;
+  max-width: 40%;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
 }
 
 /* Stijlen voor de donkere thema-knop */
@@ -84,8 +99,29 @@ header input[type="text"] {
   background-color: #1565c0;
 }
 
+#favorites-toggle-label {
+  background-color: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  text-align: center;
+  margin-left: 0.5rem;
+}
+
+#favorites-toggle-label:hover {
+  background-color: #1565c0;
+}
+
 /* Verberg de standaard checkbox */
 #theme-toggle {
+  display: none;
+}
+
+#favorites-toggle {
   display: none;
 }
 
@@ -120,7 +156,6 @@ body.dark #site-title {
 body.dark input, body.dark select, body.dark button {
   background-color: #333333;
   color: #e0e0e0;
-  border: 1px solid #555555;
 }
 
 body.dark a {
@@ -135,87 +170,6 @@ body.dark .movie-card {
 
 body.dark .movie-card:hover {
   box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
-}
-
-/* Stijlen voor favorietkaarten */
-.favorite-card {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background: #fff;
-  margin-bottom: 1rem;
-}
-
-.favorite-poster {
-  width: 80px; /* Kleinere grootte voor favoriet posters */
-  border-radius: 4px;
-  object-fit: cover;
-}
-
-/* Stijlen voor de verwijder-knop */
-.remove-favorite-btn {
-  padding: 0.5rem 1rem;
-  background-color: #ff4d4d;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.remove-favorite-btn:hover {
-  background-color: #ff1a1a;
-}
-
-/* Stijlen voor de favorietencontainer */
-#favorites-container {
-  display: flex; /* Zorg dat de container zichtbaar is */
-  flex-direction: column; /* Stapel favorietkaarten verticaal */
-  gap: 1rem; /* Voeg ruimte toe tussen favorietkaarten */
-  padding: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background: #e3f2fd; /* Lichtste blauwe kleur */
-  max-height: 400px; /* Optioneel: Beperk hoogte */
-  overflow-y: auto; /* Scroll als content overflows */
-}
-
-/* Stijlen voor de lege favorietenbalk */
-#favorites-container p {
-  background-color: inherit; /* Gebruik dezelfde achtergrondkleur als de container */
-  color: #1976d2; /* Blauwe tekstkleur */
-  padding: 1rem;
-  border-radius: 8px;
-  text-align: center;
-  margin: 0;
-}
-
-/* Donker modus aanpassingen */
-body.dark #favorites-container {
-  background: #2a2a2a; /* Donkere achtergrondkleur in donker modus */
-  border: 1px solid #333;
-}
-
-body.dark #favorites-container p {
-  background-color: inherit; /* Gebruik dezelfde achtergrondkleur als de container */
-  color: #90caf9; /* Lichtere blauwe tekstkleur in donker modus */
-}
-
-body.dark .favorite-card {
-  background: #1e1e1e;
-  border: 1px solid #333;
-}
-
-body.dark .remove-favorite-btn {
-  background-color: #ff4d4d;
-  color: #fff;
-}
-
-body.dark .remove-favorite-btn:hover {
-  background-color: #ff1a1a;
 }
 
 /* Overlay container */
@@ -282,20 +236,63 @@ body.dark #close-overlay {
 
 /* Standaardstijl voor de favorietknop */
 .favorite-btn {
-  background-color: #fff;
-  color: #000;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 0.5rem 1rem;
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 2;
+  background: none !important;
+  border: none;
+  border-radius: 0;
+  width: 1.7rem;
+  height: 1.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  padding: 0;
+  transition: filter 0.2s, transform 0.15s;
+  outline: none;
+  box-shadow: none !important;
 }
 
-/* Actieve stijl voor de favorietknop (toegevoegd aan favorieten) */
-.favorite-btn.active {
-  background-color: #000;
-  color: #fff;
-  border-color: #000;
+.favorite-btn svg {
+  width: 1.3rem;
+  height: 1.3rem;
+  display: block;
+  pointer-events: none;
+}
+
+.favorite-btn:not(.active) svg {
+  fill: none;
+  stroke: #1976d2; /* Altijd blauw, ook in licht thema */
+  stroke-width: 2.5;
+  /* Geen rand/vierkant */
+}
+
+.favorite-btn.active svg {
+  fill: #FFD600;
+  stroke: #FFD600;
+  stroke-width: 2.5;
+}
+
+.favorite-btn:focus-visible,
+.favorite-btn:hover {
+  filter: drop-shadow(0 0 4px #FFD60088);
+  transform: scale(1.15);
+}
+
+body.dark .favorite-btn:not(.active) svg {
+  stroke: #90caf9; /* Blauwe rand in donker thema */
+}
+
+body.dark .favorite-btn.active svg {
+  fill: #FFD600;
+  stroke: #FFD600;
+}
+
+body.dark .favorite-btn:focus-visible,
+body.dark .favorite-btn:hover {
+  filter: drop-shadow(0 0 6px #FFD600cc);
 }
 
 /* Stijlen voor de "Load More"-knop */
@@ -327,5 +324,18 @@ body.dark #theme-toggle-label {
 }
 
 body.dark #theme-toggle-label:hover {
+  background-color: #64b5f6;
+}
+
+body.favorites-only #movie-list {
+  display: grid;
+}
+
+body.dark #favorites-toggle-label {
+  background-color: #90caf9;
+  color: #121212;
+}
+
+body.dark #favorites-toggle-label:hover {
   background-color: #64b5f6;
 }
