@@ -1,6 +1,5 @@
 <!doctype html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/vite.svg" />
@@ -8,7 +7,6 @@
   <title>Lunchroom Films</title>
   <link rel="stylesheet" href="src/style.css">
 </head>
-
 <body>
   <div id="app">
     <header>
@@ -19,7 +17,7 @@
       <div class="header-actions">
         <label id="favorites-toggle-label" for="favorites-toggle">Favorieten</label>
         <input type="checkbox" id="favorites-toggle" />
-        <label id="theme-toggle-label" for="theme-toggle">🌙</label>
+        <label id="theme-toggle-label" for="theme-toggle">Donker thema</label>
         <input type="checkbox" id="theme-toggle" />
         <input type="text" id="search" placeholder="Zoek een film…">
       </div>
@@ -36,7 +34,7 @@
           Jaar:
           <input type="number" id="year-filter" placeholder="Bijv. 2023">
         </label>
-        <button id="released-toggle" type="button" title="Toon alleen unreleased films">Unreleased</button>
+        <button id="status-toggle" type="button" title="Filter op status">All</button>
         <button id="apply-filters">Toepassen</button>
         <button id="reset-filters" title="Reset filters" aria-label="Reset filters">⟲</button>
         <span id="sort-container">
@@ -53,7 +51,6 @@
           </select>
         </span>
       </section>
-
       <section id="movie-list"></section>
       <div id="bottom-actions">
         <button id="load-more" class="hidden">Meer laden</button>
@@ -72,7 +69,6 @@
     </footer>
     <script type="module" src="/src/main.js"></script>
   </div>
-
   <div id="overlay" class="hidden">
     <div id="overlay-content">
       <button id="close-overlay">✖</button>
@@ -80,5 +76,4 @@
     </div>
   </div>
 </body>
-
 </html>

@@ -16,58 +16,28 @@ const app = document.getElementById('app');
 // 2. Verwijs naar bestaande container voor films
 const movieContainer = document.getElementById('movie-list');
 
-// 3. Fetch populaire films
-let currentPage = 1; // Houd bij welke pagina momenteel wordt weergegeven
-let currentMovies = []; // Houd de laatst opgehaalde films bij (populair, gefilterd of favorieten)
-let originalMovies = []; // Houd de originele volgorde bij voor reset
-let currentSort = ''; // Houd de huidige sorteeroptie bij
-let releasedFilter = 'all'; // 'all', 'released', 'unreleased'
-const releasedToggle = document.getElementById('released-toggle');
+// State
+let currentMovies = [];
+let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
 
-// Helper om knopstatus en tekst te updaten
-function updateReleasedToggleUI() {
-  if (releasedFilter === 'all') {
-    releasedToggle.classList.remove('active');
-    releasedToggle.textContent = 'Alle';
-    releasedToggle.title = 'Toon alle films';
-  } else if (releasedFilter === 'unreleased') {
-    releasedToggle.classList.add('active');
-    releasedToggle.textContent = 'Unreleased';
-    releasedToggle.title = 'Toon alleen films die nog niet zijn uitgebracht';
-  } else if (releasedFilter === 'released') {
-    releasedToggle.classList.add('active');
-    releasedToggle.textContent = 'Released';
-    releasedToggle.title = 'Toon alleen films die al zijn uitgebracht';
-  }
+// Helper
+function isFav() {
+  return document.getElementById('favorites-toggle').checked;
 }
 
-// Toggle tussen alle -> unreleased -> released -> alle
-releasedToggle.addEventListener('click', () => {
-  if (releasedFilter === 'all') {
-    releasedFilter = 'unreleased';
-  } else if (releasedFilter === 'unreleased') {
-    releasedFilter = 'released';
-  } else {
-    releasedFilter = 'all';
-  }
-  updateReleasedToggleUI();
-});
+// 3. Fetch populaire films
+let currentPage = 1; // Houd bij welke pagina momenteel wordt weergegeven
 
-// Zet de juiste UI bij laden
-updateReleasedToggleUI();
-
-async function loadPopularMovies(page = 1, sort = '', extra = {}) {
+async function loadPopularMovies() {
   try {
-    const movies = await getFilteredMovies('', '', sort, extra, page);
-    if (page === 1) {
-      currentMovies = movies;
-      originalMovies = [...movies];
-      renderMovies(movies);
-    } else {
-      currentMovies = [...currentMovies, ...movies];
-      originalMovies = [...currentMovies];
-      renderMovies(currentMovies);
+    const movies = await getPopularMovies(currentPage);
+    if (!movies.length) {
+      console.warn('No movies returned from the API.');
+      movieContainer.innerHTML = '<p>No movies available at the moment.</p>';
+      return;
     }
+    currentMovies = movies;
+    renderMovies(movies);
     document.getElementById('load-more').classList.remove('hidden'); // Maak de knop zichtbaar
   } catch (err) {
     console.error('Error fetching popular movies:', err);
@@ -76,25 +46,31 @@ async function loadPopularMovies(page = 1, sort = '', extra = {}) {
 }
 
 async function loadMoreMovies() {
-  currentPage++;
-  const todayObj = new Date();
-  todayObj.setHours(0, 0, 0, 0);
-  const todayStr = todayObj.toISOString().slice(0, 10);
-  // Morgen berekenen
-  const tomorrowObj = new Date(todayObj);
-  tomorrowObj.setDate(todayObj.getDate() + 1);
-  const tomorrowStr = tomorrowObj.toISOString().slice(0, 10);
+  if (isFav()) return; // Niet laden in favorietenmodus
+  try {
+    currentPage++; // Verhoog de pagina
+    const sortValue = document.getElementById('sort-dropdown').value; // Controleer de huidige sorteeroptie
+    const genreId = document.getElementById('genre-filter').value; // Haal het geselecteerde genre op
+    const year = document.getElementById('year-filter').value; // Haal het geselecteerde jaar op
+    const extraFilters = {};
 
-  let extra = {};
-  let sort = currentSort;
-  if (releasedFilter === 'unreleased') {
-    extra = { release_date_gte: tomorrowStr };
-    sort = 'release_date.desc';
-  } else if (releasedFilter === 'released') {
-    extra = { release_date_lte: todayStr };
-    sort = 'release_date.desc';
+    // Voeg extra filters toe voor unreleased/released
+    if (currentStatus === 'unreleased') {
+      extraFilters.release_date_gte = new Date().toISOString().split('T')[0];
+    } else if (currentStatus === 'released') {
+      extraFilters.release_date_lte = new Date().toISOString().split('T')[0];
+    }
+
+    const moreMovies = await getFilteredMovies(genreId, year, sortValue, extraFilters, currentPage); // Haal meer films op
+    if (!moreMovies.length) {
+      console.warn('No more movies to load.');
+      document.getElementById('load-more').classList.add('hidden'); // Verberg de knop als er geen films meer zijn
+      return;
+    }
+    renderMovies(moreMovies, true); // Voeg de nieuwe films toe aan de weergave
+  } catch (err) {
+    console.error('Error loading more movies:', err);
   }
-  await loadPopularMovies(currentPage, sort, extra);
 }
 
 // Test getPopularMovies()
@@ -104,7 +80,18 @@ getPopularMovies().then(movies => {
 
 // 4. Render-functie
 function renderMovies(movies, append = false) {
-  if (!append) movieContainer.innerHTML = ''; // Leegmaken tenzij we films toevoegen
+  if (!append) {
+    movieContainer.innerHTML = ''; // Leegmaken tenzij we films toevoegen
+    currentMovies = []; // Reset de huidige lijst als we niet toevoegen
+  }
+  currentMovies = [...currentMovies, ...movies]; // Voeg nieuwe films toe aan de huidige lijst
+  // Favorietenmelding tonen/verbergen
+  const favMsg = document.getElementById('favorites-empty-message');
+  if (isFav() && favorites.length === 0) {
+    favMsg && (favMsg.style.display = '');
+  } else {
+    favMsg && (favMsg.style.display = 'none');
+  }
   movies.forEach(movie => {
     const card = document.createElement('div');
     card.className = 'movie-card';
@@ -122,68 +109,20 @@ function renderMovies(movies, append = false) {
       />
       <h3>${movie.title}</h3>
       <p><strong>Release Date:</strong> ${movie.release_date || 'Unknown'}</p>
-      <p><strong>Rating:</strong> ${typeof movie.vote_average === 'number' ? movie.vote_average.toFixed(1) : 'N/A'}</p>
+      <p><strong>Rating:</strong> ${movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'}</p>
     `;
     const favoriteBtn = card.querySelector('.favorite-btn');
     favoriteBtn.addEventListener('click', (e) => {
       e.stopPropagation(); // Voorkom dat de klik op de ster de overlay opent
       toggleFavorite(movie);
       favoriteBtn.classList.toggle('active', favorites.some(fav => fav.id === movie.id));
+      // Direct updaten van favorietenlijst indien in favorieten-modus
+      if (isFav()) renderMovies(favorites);
     });
     card.addEventListener('click', () => openOverlay(movie)); // Open overlay bij klik op de kaart
     movieContainer.appendChild(card);
   });
 }
-
-// Sorteerfunctie
-function sortMovies(movies, sortValue) {
-  let sorted = [...movies];
-  switch (sortValue) {
-    case 'popularity.desc':
-      sorted.sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
-      break;
-    case 'release_date.desc':
-      sorted.sort((a, b) => new Date(b.release_date) - new Date(a.release_date));
-      break;
-    case 'release_date.asc':
-      sorted.sort((a, b) => new Date(a.release_date) - new Date(b.release_date));
-      break;
-    case 'vote_average.desc':
-      sorted.sort((a, b) => (b.vote_average || 0) - (a.vote_average || 0));
-      break;
-    case 'vote_average.asc':
-      sorted.sort((a, b) => (a.vote_average || 0) - (b.vote_average || 0));
-      break;
-    case 'title.asc':
-      sorted.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
-      break;
-    case 'title.desc':
-      sorted.sort((a, b) => (b.title || '').localeCompare(a.title || ''));
-      break;
-    default:
-      // Geen sortering, originele volgorde
-      sorted = [...originalMovies];
-  }
-  return sorted;
-}
-
-// Sorteer event listener
-const sortDropdown = document.getElementById('sort-dropdown');
-sortDropdown.addEventListener('change', async () => {
-  const value = sortDropdown.value;
-  currentSort = value;
-  currentPage = 1;
-  if (isFav()) {
-    // Sorteer favorieten lokaal
-    const sorted = value ? sortMovies(favorites, value) : [...favorites];
-    currentMovies = sorted;
-    originalMovies = [...favorites];
-    renderMovies(sorted);
-  } else {
-    // Haal gesorteerde films van de API
-    await loadPopularMovies(1, value);
-  }
-});
 
 function openOverlay(movie) {
   const overlay = document.getElementById('overlay');
@@ -197,7 +136,7 @@ function openOverlay(movie) {
     />
     <h2>${movie.title}</h2>
     <p><strong>Release Date:</strong> ${movie.release_date || 'Unknown'}</p>
-    <p><strong>Rating:</strong> ${typeof movie.vote_average === 'number' ? movie.vote_average.toFixed(1) : 'N/A'}</p>
+    <p><strong>Rating:</strong> ${movie.vote_average || 'N/A'}</p>
     <p>${overview}</p>
   `;
   overlay.classList.remove('hidden'); // Maak overlay zichtbaar
@@ -244,11 +183,9 @@ loadPopularMovies();
 const searchInput = document.getElementById('search');
 const debouncedSearch = debounce(async (e) => {
   const query = e.target.value.trim();
-  if (!query) return loadPopularMovies(1, currentSort); // terug naar populairste als leeg
+  if (!query) return loadPopularMovies(); // terug naar populairste als leeg
   try {
     const results = await searchMovies(query);
-    currentMovies = results;
-    originalMovies = [...results];
     renderMovies(results);
   } catch (err) {
     console.error('Error during search:', err);
@@ -275,77 +212,134 @@ async function loadGenres() {
 }
 
 // 9. Filters toepassen
-document.getElementById('apply-filters').addEventListener('click', async () => {
-  const genreId = document.getElementById('genre-filter').value;
-  const year = document.getElementById('year-filter').value;
-  const todayObj = new Date();
-  todayObj.setHours(0, 0, 0, 0);
-  const todayStr = todayObj.toISOString().slice(0, 10);
-  const tomorrowObj = new Date(todayObj);
-  tomorrowObj.setDate(todayObj.getDate() + 1);
-  const tomorrowStr = tomorrowObj.toISOString().slice(0, 10);
+document.getElementById('apply-filters').addEventListener('click', applyFilters);
 
-  if (isFav()) {
-    let filtered = [...favorites];
-    if (genreId) {
-      filtered = filtered.filter(movie =>
-        movie.genre_ids && movie.genre_ids.includes(Number(genreId))
-      );
-    }
-    if (year) {
-      filtered = filtered.filter(movie =>
-        movie.release_date && movie.release_date.startsWith(year)
-      );
-    }
-    if (releasedFilter === 'unreleased') {
-      filtered = filtered.filter(movie =>
-        movie.release_date && new Date(movie.release_date) >= tomorrowObj
-      );
-    } else if (releasedFilter === 'released') {
-      filtered = filtered.filter(movie =>
-        movie.release_date && new Date(movie.release_date) <= todayObj
-      );
-    }
-    const value = sortDropdown.value;
-    const sorted = value ? sortMovies(filtered, value) : filtered;
-    currentMovies = sorted;
-    originalMovies = [...filtered];
-    renderMovies(sorted);
+// Voeg een eventlistener toe aan de "Reset filters" knop
+document.getElementById('reset-filters').addEventListener('click', () => {
+  document.getElementById('genre-filter').value = ''; // Reset genre filter
+  document.getElementById('year-filter').value = ''; // Reset jaar filter
+  document.getElementById('status-toggle').textContent = 'All'; // Reset "Status" toggle
+  currentStatus = 'all'; // Reset status
+  document.getElementById('sort-dropdown').value = ''; // Reset sortering
+  loadPopularMovies(); // Laad de populairste films opnieuw
+});
+
+// Voeg een eventlistener toe aan de "Status" toggle
+const statusToggle = document.getElementById('status-toggle');
+let currentStatus = 'all'; // Mogelijke waarden: 'all', 'released', 'unreleased'
+
+// Voeg een klikgebeurtenis toe aan de status-knop
+statusToggle.addEventListener('click', () => {
+  if (currentStatus === 'all') {
+    currentStatus = 'released';
+    statusToggle.textContent = 'Released';
+  } else if (currentStatus === 'released') {
+    currentStatus = 'unreleased';
+    statusToggle.textContent = 'Unreleased';
   } else {
-    try {
-      let extra = {};
-      let sort = currentSort;
-      if (releasedFilter === 'unreleased') {
-        extra = { release_date_gte: tomorrowStr };
-        sort = 'release_date.desc';
-      } else if (releasedFilter === 'released') {
-        extra = { release_date_lte: todayStr };
-        sort = 'release_date.desc';
-      }
-      let filteredMovies = await getFilteredMovies(genreId, year, sort, extra);
-      // Filter lokaal na op zekerheid
-      if (releasedFilter === 'unreleased') {
-        filteredMovies = filteredMovies.filter(movie =>
-          movie.release_date && new Date(movie.release_date) >= tomorrowObj
-        );
-      } else if (releasedFilter === 'released') {
-        filteredMovies = filteredMovies.filter(movie =>
-          movie.release_date && new Date(movie.release_date) <= todayObj
-        );
-      }
-      currentMovies = filteredMovies;
-      originalMovies = [...filteredMovies];
-      renderMovies(filteredMovies);
-    } catch (err) {
-      console.error('Fout bij toepassen van filters:', err);
-      movieContainer.innerHTML = '<p>Sorry, er ging iets mis bij het toepassen van de filters.</p>';
-    }
+    currentStatus = 'all';
+    statusToggle.textContent = 'All';
   }
 });
 
-// 10. Favorieten beheren
-const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+async function applyFilters() {
+  const genreId = document.getElementById('genre-filter').value;
+  const year = document.getElementById('year-filter').value; // Haal het geselecteerde jaar op
+  const sortValue = document.getElementById('sort-dropdown').value; // Haal de sorteeroptie op
+  const extraFilters = {};
 
+  // Voeg extra filters toe op basis van de huidige status
+  if (currentStatus === 'unreleased') {
+    extraFilters.release_date_gte = new Date().toISOString().split('T')[0]; // Alleen toekomstige films vanaf vandaag
+  } else if (currentStatus === 'released') {
+    extraFilters.release_date_lte = new Date().toISOString().split('T')[0]; // Alleen reeds uitgebrachte films
+  }
+
+  // Voeg een filter toe voor het jaartal
+  if (year) {
+    extraFilters.primary_release_year = year; // Filter op het geselecteerde jaar
+  }
+
+  try {
+    currentPage = 1; // Reset naar de eerste pagina
+    showLoadingIndicator(true); // Toon laadindicator
+    const filteredMovies = await fetchAllMovies(genreId, year, sortValue, extraFilters); // Haal gefilterde en gesorteerde films op
+    currentMovies = filteredMovies; // Update de huidige lijst
+    renderMovies(currentMovies); // Toon de gefilterde en gesorteerde films
+    document.getElementById('load-more').classList.add('hidden'); // Verberg de "Meer laden" knop
+  } catch (err) {
+    console.error('Fout bij toepassen van filters:', err);
+    movieContainer.innerHTML = '<p>Sorry, er ging iets mis bij het toepassen van de filters.</p>';
+  } finally {
+    showLoadingIndicator(false); // Verberg laadindicator
+  }
+}
+
+async function fetchAllMovies(genreId, year, sortValue, extraFilters) {
+  let allMovies = [];
+  let page = 1;
+  let hasMore = true;
+  const maxPages = 5; // Limiteer het aantal pagina's om de UX te verbeteren
+
+  while (hasMore && page <= maxPages) {
+    const params = new URLSearchParams({
+      api_key: import.meta.env.VITE_TMDB_KEY,
+      with_genres: genreId || '',
+      sort_by: sortValue || 'popularity.desc',
+      page
+    });
+
+    // Voeg extra filters toe voor unreleased/released
+    if (extraFilters.release_date_gte) {
+      params.set('release_date.gte', extraFilters.release_date_gte);
+    }
+    if (extraFilters.release_date_lte) {
+      params.set('release_date.lte', extraFilters.release_date_lte);
+    }
+
+    // Voeg het jaartal filter toe
+    if (extraFilters.primary_release_year) {
+      params.set('primary_release_year', extraFilters.primary_release_year);
+    }
+
+    const res = await fetch(`https://api.themoviedb.org/3/discover/movie?${params}`);
+    if (!res.ok) {
+      throw new Error(`Fout bij ophalen films: ${res.status}`);
+    }
+
+    const data = await res.json();
+
+    if (data.results.length === 0) {
+      hasMore = false;
+    } else {
+      allMovies = [...allMovies, ...data.results];
+      page++;
+    }
+  }
+
+  return allMovies;
+}
+
+function showLoadingIndicator(show) {
+  const loadingIndicator = document.getElementById('loading-indicator');
+  if (show) {
+    if (!loadingIndicator) {
+      const indicator = document.createElement('div');
+      indicator.id = 'loading-indicator';
+      indicator.textContent = 'Laden...';
+      indicator.style.textAlign = 'center';
+      indicator.style.margin = '1rem 0';
+      movieContainer.appendChild(indicator);
+    }
+  } else {
+    const indicator = document.getElementById('loading-indicator');
+    if (indicator) {
+      indicator.remove();
+    }
+  }
+}
+
+// 10. Favorieten beheren
 function toggleFavorite(movie) {
   const index = favorites.findIndex(fav => fav.id === movie.id);
   if (index === -1) {
@@ -353,80 +347,35 @@ function toggleFavorite(movie) {
   } else {
     favorites.splice(index, 1);
   }
-  localStorage.setItem('favorites', JSON.stringify(favorites));
-  if (isFav()) {
-    const value = sortDropdown.value;
-    const sorted = value ? sortMovies(favorites, value) : [...favorites];
-    currentMovies = sorted;
-    originalMovies = [...favorites];
-    renderMovies(sorted);
-  }
+  localStorage.setItem('favorites', JSON.stringify(favorites)); // Sla favorieten op
+  // Bij favorietenmodus: direct updaten
+  if (isFav()) renderMovies(favorites);
 }
+
+// Voeg een klikgebeurtenis toe aan de "Favorieten" toggle
+document.getElementById('favorites-toggle').addEventListener('change', () => {
+  const favoritesToggleLabel = document.getElementById('favorites-toggle-label');
+  if (isFav()) {
+    renderMovies(favorites);
+    document.getElementById('load-more').classList.add('hidden'); // Verberg de "Meer laden" knop
+    favoritesToggleLabel.textContent = 'Alle films'; // Verander tekst naar "Alle films"
+  } else {
+    currentPage = 1; // Reset naar de eerste pagina
+    loadPopularMovies(); // Laad de volledige lijst opnieuw
+    favoritesToggleLabel.textContent = 'Favorieten'; // Verander tekst naar "Favorieten"
+  }
+});
+
+// Voeg een klikgebeurtenis toe aan de scroll-to-top knop
+document.getElementById('scroll-top-btn').addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// Voeg een eventlistener toe aan de sorteer-dropdown
+document.getElementById('sort-dropdown').addEventListener('change', () => {
+  applyFilters(); // Pas filters opnieuw toe bij wijziging van de sorteeroptie
+});
 
 // 11. Kick-off
 loadGenres();
-
-// Voeg een klikgebeurtenis toe aan de "Load More"-knop
 document.getElementById('load-more').addEventListener('click', loadMoreMovies);
-
-// Functie om te bepalen of alleen favorieten getoond moeten worden
-function isFav() {
-  return document.getElementById('favorites-toggle').checked;
-}
-
-// Event listener voor de favorieten-toggle
-const favoritesToggleLabel = document.getElementById('favorites-toggle-label');
-document.getElementById('favorites-toggle').addEventListener('change', () => {
-  sortDropdown.value = ''; // Reset sorteeroptie
-  currentSort = '';
-  if (isFav()) {
-    document.body.classList.add('favorites-only');
-    currentMovies = [...favorites];
-    originalMovies = [...favorites];
-    renderMovies(favorites);
-    document.getElementById('load-more').classList.add('hidden');
-    favoritesToggleLabel.textContent = 'Alle films';
-  } else {
-    document.body.classList.remove('favorites-only');
-    const todayObj = new Date();
-    todayObj.setHours(0, 0, 0, 0);
-    const todayStr = todayObj.toISOString().slice(0, 10);
-    const tomorrowObj = new Date(todayObj);
-    tomorrowObj.setDate(todayObj.getDate() + 1);
-    const tomorrowStr = tomorrowObj.toISOString().slice(0, 10);
-
-    let extra = {};
-    let sort = currentSort;
-    if (releasedFilter === 'unreleased') {
-      extra = { release_date_gte: tomorrowStr };
-      sort = 'release_date.desc';
-    } else if (releasedFilter === 'released') {
-      extra = { release_date_lte: todayStr };
-      sort = 'release_date.desc';
-    }
-    loadPopularMovies(1, sort, extra);
-    document.getElementById('load-more').classList.remove('hidden');
-    favoritesToggleLabel.textContent = 'Favorieten';
-  }
-});
-
-// Reset filters knop functionaliteit
-document.getElementById('reset-filters').addEventListener('click', () => {
-  document.getElementById('genre-filter').value = '';
-  document.getElementById('year-filter').value = '';
-  releasedFilter = 'all';
-  updateReleasedToggleUI();
-  if (isFav()) {
-    currentMovies = [...favorites];
-    originalMovies = [...favorites];
-    renderMovies(favorites);
-  } else {
-    loadPopularMovies(1, currentSort, {});
-  }
-});
-
-// Scroll naar boven knop functionaliteit
-const scrollTopBtn = document.getElementById('scroll-top-btn');
-scrollTopBtn.addEventListener('click', () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-});
