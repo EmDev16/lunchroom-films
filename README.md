@@ -152,9 +152,10 @@ movie-app/
 ├ index.html
 └ package.json
 
-## 📸 Screenshots
-![Home view](.
-![Favorieten](./screenshots/favorites.png)
+## 🌐 Live demo
+
+Bekijk de live versie van Lunchroom Films hier:  
+https://EmDev16.github.io/lunchroom-films/
 
 ## Troubleshooting
 1. Ensure the `.env` file contains a valid `VITE_TMDB_KEY`.
