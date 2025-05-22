@@ -679,3 +679,119 @@ body.dark #scroll-top-btn:focus {
   background-color: #1976d2;
   color: #fff;
 }
+
+/* Responsieve stijlen */
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  #site-title {
+    font-size: 1.5rem;
+    width: 100%;
+    text-align: center;
+  }
+
+  .header-actions {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  #filters {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  #sort-container {
+    margin-left: 0;
+    justify-content: center;
+    width: 100%; /* Zorg dat de sorteerknop de volledige breedte gebruikt */
+  }
+
+  #sort-dropdown {
+    width: 100%; /* Zorg dat de dropdown zich aanpast aan de breedte */
+    font-size: 1rem; /* Pas de tekstgrootte aan voor betere leesbaarheid */
+    padding: 0.5rem; /* Voeg extra padding toe voor gebruiksgemak */
+  }
+
+  #sort-icon {
+    display: none; /* Verberg het sorteericoon op middelgrote apparaten */
+  }
+
+  #movie-list {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 0.5rem;
+  }
+
+  .movie-card {
+    min-height: 300px;
+  }
+
+  #overlay-content {
+    max-width: 90%;
+    padding: 1.5rem;
+  }
+
+  footer {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  header {
+    padding: 1rem;
+  }
+
+  #site-title {
+    font-size: 1.2rem;
+  }
+
+  header input[type="text"] {
+    width: 100%;
+  }
+
+  #filters {
+    padding: 1rem;
+  }
+
+  #apply-filters,
+  #reset-filters,
+  #status-toggle {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
+  }
+
+  #movie-list {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+
+  .movie-card {
+    min-height: 250px;
+  }
+
+  footer {
+    padding: 0.5rem;
+  }
+
+  #scroll-top-btn {
+    width: 2rem;
+    height: 2rem;
+    font-size: 1.2rem;
+  }
+
+  #load-more {
+    display: block; /* Zorg dat de knop zichtbaar blijft */
+    width: 100%; /* Laat de knop de volledige breedte gebruiken */
+    padding: 0.6rem 1rem; /* Pas de padding aan voor kleinere apparaten */
+    font-size: 1rem; /* Maak de tekst iets kleiner */
+    margin: 1.5rem auto; /* Zorg voor voldoende ruimte rondom de knop */
+  }
+
+  #load-more:hover {
+    background-color: #1565c0; /* Zorg dat de hover-stijl consistent blijft */
+  }
+}
