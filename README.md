@@ -152,6 +152,9 @@ movie-app/
 ├ index.html
 └ package.json
 
+## 📸 Screenshots
+![Home view](.
+![Favorieten](./screenshots/favorites.png)
 
 ## Troubleshooting
 1. Ensure the `.env` file contains a valid `VITE_TMDB_KEY`.
