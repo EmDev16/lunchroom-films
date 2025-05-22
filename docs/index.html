@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lunchroom Films</title>
+  <script type="module" crossorigin src="/assets/index-C2029mlo.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-C3oZMa4u.css">
+</head>
+<body>
+  <div id="app">
+    <header>
+      <div class="header-logo-title">
+        <img src="/assets/logo-Ciy10KAb.png" alt="Logo" class="site-logo" />
+        <h1 id="site-title">Lunchroom Films</h1>
+      </div>
+      <div class="header-actions">
+        <label id="favorites-toggle-label" for="favorites-toggle">Favorieten</label>
+        <input type="checkbox" id="favorites-toggle" />
+        <label id="theme-toggle-label" for="theme-toggle">Donker thema</label>
+        <input type="checkbox" id="theme-toggle" />
+        <input type="text" id="search" placeholder="Zoek een film…">
+      </div>
+    </header>
+    <main>
+      <section id="filters">
+        <label>
+          Genre:
+          <select id="genre-filter">
+            <option value="">Alle genres</option>
+          </select>
+        </label>
+        <label>
+          Jaar:
+          <input type="number" id="year-filter" placeholder="Bijv. 2023">
+        </label>
+        <button id="status-toggle" type="button" title="Filter op status">All</button>
+        <button id="apply-filters">Toepassen</button>
+        <button id="reset-filters" title="Reset filters" aria-label="Reset filters">⟲</button>
+        <span id="sort-container">
+          <span id="sort-icon">⇅</span>
+          <select id="sort-dropdown" aria-label="Sorteer">
+            <option value="" selected>Sorteer</option>
+            <option value="popularity.desc">Populairst</option>
+            <option value="release_date.desc">Nieuwste</option>
+            <option value="release_date.asc">Oudste</option>
+            <option value="vote_average.desc">Hoogste rating</option>
+            <option value="vote_average.asc">Laagste rating</option>
+            <option value="title.asc">A-Z</option>
+            <option value="title.desc">Z-A</option>
+          </select>
+        </span>
+      </section>
+      <section id="movie-list"></section>
+      <div id="bottom-actions">
+        <button id="load-more" class="hidden">Meer laden</button>
+        <button id="scroll-top-btn" title="Scroll naar boven" aria-label="Scroll naar boven">
+          <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false" style="display:block;margin:auto;">
+            <polyline points="6 15 12 9 18 15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </main>
+    <footer>
+      Gegevens & afbeeldingen via
+      <a href="https://www.themoviedb.org" target="_blank" rel="noopener noreferrer">
+        The Movie Database (TMDb)
+      </a>
+    </footer>
+  </div>
+  <div id="overlay" class="hidden">
+    <div id="overlay-content">
+      <button id="close-overlay">✖</button>
+      <div id="overlay-details"></div>
+    </div>
+  </div>
+</body>
+</html>
