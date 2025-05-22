@@ -713,13 +713,13 @@ body.dark #scroll-top-btn:focus {
   }
 
   #sort-dropdown {
-    width: 100%; /* Zorg dat de dropdown zich aanpast aan de breedte */
-    font-size: 1rem; /* Pas de tekstgrootte aan voor betere leesbaarheid */
-    padding: 0.5rem; /* Voeg extra padding toe voor gebruiksgemak */
+    width: 100%; 
+    font-size: 1rem;
+    padding: 0.5rem;
   }
 
   #sort-icon {
-    display: none; /* Verberg het sorteericoon op middelgrote apparaten */
+    display: none;
   }
 
   #movie-list {
@@ -784,14 +784,14 @@ body.dark #scroll-top-btn:focus {
   }
 
   #load-more {
-    display: block; /* Zorg dat de knop zichtbaar blijft */
-    width: 100%; /* Laat de knop de volledige breedte gebruiken */
-    padding: 0.6rem 1rem; /* Pas de padding aan voor kleinere apparaten */
-    font-size: 1rem; /* Maak de tekst iets kleiner */
-    margin: 1.5rem auto; /* Zorg voor voldoende ruimte rondom de knop */
+    display: block; 
+    width: 100%; 
+    padding: 0.6rem 1rem; 
+    font-size: 1rem; 
+    margin: 1.5rem auto;
   }
 
   #load-more:hover {
-    background-color: #1565c0; /* Zorg dat de hover-stijl consistent blijft */
+    background-color: #1565c0;
   }
 }

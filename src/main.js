@@ -49,25 +49,33 @@ async function loadMoreMovies() {
   if (isFav()) return; // Niet laden in favorietenmodus
   try {
     currentPage++; // Verhoog de pagina
-    const sortValue = document.getElementById('sort-dropdown').value; // Controleer de huidige sorteeroptie
+    const sortValue = document.getElementById('sort-dropdown').value || 'release_date.desc'; // Standaard sorteeroptie
     const genreId = document.getElementById('genre-filter').value; // Haal het geselecteerde genre op
     const year = document.getElementById('year-filter').value; // Haal het geselecteerde jaar op
     const extraFilters = {};
 
     // Voeg extra filters toe voor unreleased/released
+    const today = new Date().toISOString().split('T')[0]; // Dynamische huidige datum
     if (currentStatus === 'unreleased') {
-      extraFilters.release_date_gte = new Date().toISOString().split('T')[0];
+      extraFilters.release_date_gte = today; // Alleen toekomstige films vanaf vandaag
+      sortValue = 'release_date.asc'; // Sorteer oplopend (van vandaag naar toekomst)
     } else if (currentStatus === 'released') {
-      extraFilters.release_date_lte = new Date().toISOString().split('T')[0];
+      extraFilters.release_date_lte = today; // Alleen reeds uitgebrachte films tot vandaag
+      sortValue = 'release_date.desc'; // Sorteer aflopend (van vandaag naar verleden)
     }
 
-    const moreMovies = await getFilteredMovies(genreId, year, sortValue, extraFilters, currentPage); // Haal meer films op
-    if (!moreMovies.length) {
-      console.warn('No more movies to load.');
-      document.getElementById('load-more').classList.add('hidden'); // Verberg de knop als er geen films meer zijn
+    const moreMovies = await getFilteredMovies(genreId, year, sortValue, extraFilters, currentPage); // Haal meer films op met de juiste filters
+    const uniqueMovies = moreMovies.filter(
+      (movie) => !currentMovies.some((currentMovie) => currentMovie.id === movie.id)
+    ); // Vermijd dubbele films
+
+    if (!uniqueMovies.length) {
+      console.warn('No more unique movies to load.');
+      document.getElementById('load-more').classList.add('hidden'); // Verberg de knop als er geen unieke films meer zijn
       return;
     }
-    renderMovies(moreMovies, true); // Voeg de nieuwe films toe aan de weergave
+
+    renderMovies(uniqueMovies, true); // Voeg de nieuwe unieke films toe aan de weergave
   } catch (err) {
     console.error('Error loading more movies:', err);
   }
@@ -245,15 +253,19 @@ statusToggle.addEventListener('click', () => {
 async function applyFilters() {
   const genreId = document.getElementById('genre-filter').value;
   const year = document.getElementById('year-filter').value; // Haal het geselecteerde jaar op
-  const sortValue = document.getElementById('sort-dropdown').value; // Haal de sorteeroptie op
+  let sortValue = document.getElementById('sort-dropdown').value || 'release_date.desc'; // Standaard sorteeroptie
   const extraFilters = {};
 
   // Voeg extra filters toe op basis van de huidige status
+  const today = new Date().toISOString().split('T')[0]; // Dynamische huidige datum
   if (currentStatus === 'unreleased') {
-    extraFilters.release_date_gte = new Date().toISOString().split('T')[0]; // Alleen toekomstige films vanaf vandaag
+    extraFilters.release_date_gte = new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split('T')[0]; // Vanaf morgen
+    sortValue = 'release_date.asc'; // Sorteer oplopend (van morgen naar toekomst)
   } else if (currentStatus === 'released') {
-    extraFilters.release_date_lte = new Date().toISOString().split('T')[0]; // Alleen reeds uitgebrachte films
+    extraFilters.release_date_lte = today; // Tot vandaag
+    sortValue = 'release_date.desc'; // Sorteer aflopend (van vandaag naar verleden)
   }
+  // Voor "All" zijn er geen extra filters nodig
 
   // Voeg een filter toe voor het jaartal
   if (year) {
@@ -266,7 +278,7 @@ async function applyFilters() {
     const filteredMovies = await fetchAllMovies(genreId, year, sortValue, extraFilters); // Haal gefilterde en gesorteerde films op
     currentMovies = filteredMovies; // Update de huidige lijst
     renderMovies(currentMovies); // Toon de gefilterde en gesorteerde films
-    document.getElementById('load-more').classList.add('hidden'); // Verberg de "Meer laden" knop
+    document.getElementById('load-more').classList.remove('hidden'); // Zorg dat de "Meer laden" knop zichtbaar blijft
   } catch (err) {
     console.error('Fout bij toepassen van filters:', err);
     movieContainer.innerHTML = '<p>Sorry, er ging iets mis bij het toepassen van de filters.</p>';
