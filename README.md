@@ -199,7 +199,7 @@ movie-app/
 Bekijk de live versie van Lunchroom Films hier:  
 [![Live Demo](https://img.shields.io/badge/demo-online-brightgreen)](https://EmDev16.github.io/lunchroom-films/)
 
-## Gebruikte bronnen
+## Bronnen
 - [Vite](https://vitejs.dev/)
 
 - [CSS-Tricks](https://css-tricks.com/)
