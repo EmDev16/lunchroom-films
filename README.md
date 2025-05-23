@@ -200,11 +200,9 @@ Bekijk de live versie van Lunchroom Films hier:
 [![Live Demo](https://img.shields.io/badge/demo-online-brightgreen)](https://EmDev16.github.io/lunchroom-films/)
 
 ## Gebruikte bronnen
-- **Vite**
-https://vitejs.dev/
+- [Vite](https://vitejs.dev/)
 
-- **CSS-Tricks**
-https://css-tricks.com/
+- [CSS-Tricks](https://css-tricks.com/)
 
 - [AI-assistentie via ChatGPT](https://chatgpt.com/share/682ccf29-18d4-8002-b881-a4889c36a663)
 
