@@ -206,14 +206,11 @@ https://vitejs.dev/
 - **CSS-Tricks**
 https://css-tricks.com/
 
-- **AI-assistentie via ChatGPT**
-https://chatgpt.com/share/682ccf29-18d4-8002-b881-a4889c36a663
+- [AI-assistentie via ChatGPT](https://chatgpt.com/share/682ccf29-18d4-8002-b881-a4889c36a663)
 
-- **AI-assistentie via GitHub Copilot (sessie 1)**  
-<script src="https://gist.github.com/EmDev16/3e1a57a947818c8da01bd6255be6560a.js"></script>
+- [AI-assistentie via GitHub Copilot (sessie 1)](https://gist.github.com/EmDev16/3e1a57a947818c8da01bd6255be6560a.js"></script>)
 
-- **AI-assistentie via GitHub Copilot (sessie 2)**  
-<script src="https://gist.github.com/EmDev16/746a438f3c29e4beea0ef6b09ea69c58.js"></script>
+- [AI-assistentie via GitHub Copilot (sessie 2)](https://gist.github.com/EmDev16/746a438f3c29e4beea0ef6b09ea69c58.js"></script>)
 
 ## Troubleshooting
 1. Ensure the `.env` file contains a valid `VITE_TMDB_KEY`.
