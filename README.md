@@ -173,9 +173,11 @@ Wanneer je naar de favorieten gaat:
 
 En hier zie je het gebruik van verschillende functies in actie:
 | Search                    | Sort                 |
+|------------------------------|-------------------------------|
 | ![Zoekbalk](./screenshots/Zoekbalk_LF.png) | ![Sorteerfunctie](./screenshots/Sorteer_hoogste_rating_LF.png) |
  
  | Filter                    | Sort/filter                 |
+ |------------------------------|-------------------------------|
 | ![Filter](./screenshots/Filter_LF.png) | ![Filter en sorteerfunctie](./screenshots/Sorteer_+_filter_LF.png) |
 
 
