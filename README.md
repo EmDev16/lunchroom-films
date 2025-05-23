@@ -16,6 +16,12 @@ Lunchroom Films is een moderne SPA waarmee je:
 Gebouwd met Vite, modulaire JS, gescheiden CSS en semantische HTML.
 
 ---
+## Inhoud
+- [Installatie](#-installatie)
+- [Screenshots](#-screenshots)
+- [Projectstructuur](#-projectstructuur)
+- [Troubleshooting](#-troubleshooting)
+
 
 ## 🔗 Gebruikte API  
 - **TMDb API** (The Movie Database)  
@@ -40,7 +46,6 @@ Gebouwd met Vite, modulaire JS, gescheiden CSS en semantische HTML.
   - Favorieten-knop: click-handler in `renderMovies()`
 
 ## 2. Modern JavaScript
-
 - **Constanten**  
   ```js
   // src/api.js, regels 1–2  
@@ -139,23 +144,74 @@ Loading- en foutmeldingen
 ### ⚡ Vite Setup
 npm init vite@latest movie-app -- --template vanilla
 
+## Installatie
+Volg deze stappen om het project lokaal te draaien:
+
+1. Clone de repository
+git clone https://github.com/EmDev16/lunchroom-films.git
+cd lunchroom-films
+
+2. Installeer afhankelijkheden (indien van toepassing)
+npm install
+
+3. Maak een .env bestand aan
+Voeg een .env bestand toe in de hoofdmap met je API-sleutel of andere omgevingsvariabelen:
+VITE_TMDB_KEY=6671f55f078a9782a57acf368371a49e
+
+4. Start de development server
+Bijvoorbeeld (voor Node.js):
+npm run dev
+
+## Screenshots
+Dit is een voorbeeld van hoe de applicatie eruitziet:
+| Light theme                  | Dark theme                    |
+|------------------------------|-------------------------------|
+| ![Light](./screenshots/Homepage_LF.png) | ![Dark](./screenshots/Homepage2_LF.png) |
+
+Wanneer je naar de favorieten gaat:
+![Favorieten](./screenshots/Favorieten_LF.png)
+
+En hier zie je het gebruik van verschillende functies in actie:
+| Search                    | Sort                 |
+| ![Zoekbalk](./screenshots/Zoekbalk_LF.png) | ![Sorteerfunctie](./screenshots/Sorteer_hoogste_rating_LF.png) |
+ 
+ | Filter                    | Sort/filter                 |
+| ![Filter](./screenshots/Filter_LF.png) | ![Filter en sorteerfunctie](./screenshots/Sorteer_+_filter_LF.png) |
+
+
+
 ### 📁 Projectstructuur
 movie-app/
-├ public/
-├ src/
-│  ├ api.js
-│  ├ main.js
-│  ├ style.css
-│  └ utils.js
-├ .env
-├ .gitignore
-├ index.html
-└ package.json
+├ public/           # Statische assets (favicon, afbeeldingen, etc.)
+├ src/              # Broncode
+│  ├ api.js         # API-aanroepen
+│  ├ main.js        # Entreepunt JS
+│  ├ style.css      # CSS-bestand
+│  └ utils.js       # Hulpfuncties
+├ .env              # Omgevingsvariabelen (niet committen!)
+├ .gitignore        # Git-ignorebestand
+├ index.html        # HTML-pagina
+└ package.json      # Projectconfiguratie en scripts
 
 ## 🌐 Live demo
-
 Bekijk de live versie van Lunchroom Films hier:  
-https://EmDev16.github.io/lunchroom-films/
+[![Live Demo](https://img.shields.io/badge/demo-online-brightgreen)](https://EmDev16.github.io/lunchroom-films/)
+
+## Gebruikte bronnen
+- **Vite**
+https://vitejs.dev/
+
+- **CSS-Tricks**
+https://css-tricks.com/
+
+- **AI-assistentie via ChatGPT**
+https://chatgpt.com/share/682ccf29-18d4-8002-b881-a4889c36a663
+
+- **AI-assistentie via GitHub Copilot (sessie 1)**  
+<script src="https://gist.github.com/EmDev16/3e1a57a947818c8da01bd6255be6560a.js"></script>
+
+- **AI-assistentie via GitHub Copilot (sessie 2)**  
+<script src="https://gist.github.com/EmDev16/746a438f3c29e4beea0ef6b09ea69c58.js"></script>
 
 ## Troubleshooting
 1. Ensure the `.env` file contains a valid `VITE_TMDB_KEY`.
